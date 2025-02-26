@@ -9,7 +9,7 @@ import ResturantProfile from "./resturant/Profile";
 import ResturantSignUp from "./resturant/SignUp";
 import ResturantLogin from "./resturant/Login";
 import Orders from "./resturant/Login";
-//import Home from "./components/Home/Home";
+import Home from "./Home";
 import CreateBook from "./components/Create/Create";
 import UpdateBook from "./components/Update/Update";
 import DeleteBook from "./components/Delete/Delete";
@@ -46,7 +46,7 @@ const App = () => {
     <Router>
       <Routes>
         {/* <Route path="/" element={<Home books={books} />} /> */}
-        <Route path="/" element={<CustomerLogin />} />
+        <Route path="/" element={<Home />} />
         <Route path="/create" element={<CreateBook addBook={addBook} />} />
         <Route
           path="/update"
@@ -56,7 +56,7 @@ const App = () => {
           path="/delete"
           element={<DeleteBook deleteBook={deleteBook} />}
         />
-        {/* <Route path="/customerlogin" element={<CustomerLogin />} /> */}
+        <Route path="/customerlogin" element={<CustomerLogin />} />
         <Route path="/resturantlogin" element={<ResturantLogin />} />
         <Route path="/customersignup" element={<CustomerSignUp />} />
         <Route path="/resturantsignup" element={<ResturantSignUp />} />
