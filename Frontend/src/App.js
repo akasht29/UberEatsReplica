@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home/Home";
-import Login from "./components/Login/CustomerLogin";
+import CustomerLogin from "./customer/Login";
+import CustomerSignUp from "./customer/SignUp";
+import CustomerProfile from "./customer/Profile";
+import Dashboard from "./customer/Dashboard";
+import Favorites from "./customer/Favorites";
+import ResturantProfile from "./resturant/Profile";
+import ResturantSignUp from "./resturant/SignUp";
+import ResturantLogin from "./resturant/Login";
+import Orders from "./resturant/Login";
+//import Home from "./components/Home/Home";
 import CreateBook from "./components/Create/Create";
 import UpdateBook from "./components/Update/Update";
 import DeleteBook from "./components/Delete/Delete";
@@ -37,7 +45,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home books={books} />} />
+        {/* <Route path="/" element={<Home books={books} />} /> */}
+        <Route path="/" element={<CustomerLogin />} />
         <Route path="/create" element={<CreateBook addBook={addBook} />} />
         <Route
           path="/update"
@@ -47,7 +56,15 @@ const App = () => {
           path="/delete"
           element={<DeleteBook deleteBook={deleteBook} />}
         />
-        <Route path="/login" element={<Login />} />
+        {/* <Route path="/customerlogin" element={<CustomerLogin />} /> */}
+        <Route path="/resturantlogin" element={<ResturantLogin />} />
+        <Route path="/customersignup" element={<CustomerSignUp />} />
+        <Route path="/resturantsignup" element={<ResturantSignUp />} />
+        <Route path="/customerprofile" element={<CustomerProfile />} />
+        <Route path="/resturantprofile" element={<ResturantProfile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/favorites" element={<Favorites />} />
       </Routes>
     </Router>
   );

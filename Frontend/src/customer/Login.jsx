@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomerLogin = () => {
+const Login = () => {
   return (
     <div className="bg-light">
       <div className="container">
@@ -49,4 +49,4 @@ const CustomerLogin = () => {
   );
 };
 
-export default CustomerLogin;
+export default Login;
