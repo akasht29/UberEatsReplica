@@ -5,6 +5,7 @@ import CustomerSignUp from "./customer/SignUp";
 import CustomerProfile from "./customer/Profile";
 import Dashboard from "./customer/Dashboard";
 import Favorites from "./customer/Favorites";
+import Cart from "./customer/Cart";
 import ResturantProfile from "./resturant/Profile";
 import ResturantSignUp from "./resturant/SignUp";
 import ResturantLogin from "./resturant/Login";
@@ -13,6 +14,7 @@ import Home from "./Home";
 import CreateBook from "./components/Create/Create";
 import UpdateBook from "./components/Update/Update";
 import DeleteBook from "./components/Delete/Delete";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const [books, setBooks] = useState([
@@ -43,30 +45,34 @@ const App = () => {
   };
 
   return (
-    <Router>
-      <Routes>
-        {/* <Route path="/" element={<Home books={books} />} /> */}
-        <Route path="/" element={<Home />} />
-        <Route path="/create" element={<CreateBook addBook={addBook} />} />
-        <Route
-          path="/update"
-          element={<UpdateBook updateBook={updateBook} />}
-        />
-        <Route
-          path="/delete"
-          element={<DeleteBook deleteBook={deleteBook} />}
-        />
-        <Route path="/customerlogin" element={<CustomerLogin />} />
-        <Route path="/resturantlogin" element={<ResturantLogin />} />
-        <Route path="/customersignup" element={<CustomerSignUp />} />
-        <Route path="/resturantsignup" element={<ResturantSignUp />} />
-        <Route path="/customerprofile" element={<CustomerProfile />} />
-        <Route path="/resturantprofile" element={<ResturantProfile />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/favorites" element={<Favorites />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Navbar></Navbar>
+        <Routes>
+          {/* <Route path="/" element={<Home books={books} />} /> */}
+          <Route path="/" element={<Home />} />
+          <Route path="/create" element={<CreateBook addBook={addBook} />} />
+          <Route
+            path="/update"
+            element={<UpdateBook updateBook={updateBook} />}
+          />
+          <Route
+            path="/delete"
+            element={<DeleteBook deleteBook={deleteBook} />}
+          />
+          <Route path="/customerlogin" element={<CustomerLogin />} />
+          <Route path="/resturantlogin" element={<ResturantLogin />} />
+          <Route path="/customersignup" element={<CustomerSignUp />} />
+          <Route path="/resturantsignup" element={<ResturantSignUp />} />
+          <Route path="/customerprofile" element={<CustomerProfile />} />
+          <Route path="/resturantprofile" element={<ResturantProfile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/cart" element={<Cart />} />
+        </Routes>
+      </Router>
+    </>
   );
 };
 
