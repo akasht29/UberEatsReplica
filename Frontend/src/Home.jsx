@@ -35,6 +35,7 @@ const Home = () => {
         <div className="d-flex gap-3">
           <input
             type="text"
+            name="address"
             className="form-control"
             placeholder="Enter delivery address"
             style={{ width: "20vw", height: "6vh" }}
@@ -45,7 +46,7 @@ const Home = () => {
             <option value="option2">Schedule for Later</option>
           </select>
 
-          <button className="btn bg-black text-white" style={{ width: "10vw" }}>
+          <button className="btn btn-dark text-white" style={{ width: "10vw" }}>
             Search Here
           </button>
         </div>

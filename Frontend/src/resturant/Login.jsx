@@ -9,9 +9,7 @@ const Login = () => {
             <h1 className=" text-center mb-4">Login</h1>
             <form>
               <div className="mb-3">
-                <label htmlFor="username" className="form-label">
-                  Username
-                </label>
+                <label className="form-label">Username</label>
                 <input
                   type="text"
                   className="form-control"
@@ -21,9 +19,7 @@ const Login = () => {
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">
-                  Password
-                </label>
+                <label className="form-label">Password</label>
                 <input
                   type="password"
                   className="form-control"
@@ -33,7 +29,7 @@ const Login = () => {
                 />
               </div>
               <div className="d-grid">
-                <button type="submit" className="btn text-white bg-black">
+                <button type="submit" className="btn text-white btn-dark">
                   Login
                 </button>
               </div>

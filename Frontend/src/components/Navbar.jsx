@@ -45,7 +45,7 @@ const Navbar = () => {
 
                   <Link to="/customersignup">
                     <button
-                      className="btn bg-black text-white rounded-5 px-3 py-2"
+                      className="btn btn-dark text-white rounded-5 px-3 py-2"
                       type="button"
                     >
                       Signup
@@ -113,7 +113,7 @@ const Navbar = () => {
           ) : (
             <div className="w-100 text-center">
               <Link to="/customersignup" className=" w-75 d-block mx-auto">
-                <button className="btn bg-black fw-bolder text-white w-100 p-3 m-2 rounded-2">
+                <button className="btn btn-dark fw-bolder text-white w-100 p-3 m-2 rounded-2">
                   Sign Up
                 </button>
               </Link>
