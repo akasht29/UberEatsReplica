@@ -26,6 +26,14 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false
       },
+      restaurant_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Restaurants',
+          key: 'restaurant_id'
+        }
+      },
       quantity: { 
         type: Sequelize.INTEGER, 
         defaultValue: 1, 
