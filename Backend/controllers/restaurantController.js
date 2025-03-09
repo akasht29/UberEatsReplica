@@ -8,34 +8,37 @@ const session = require("express-session");
 // Restaurant Signup
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password, location } = req.body;
+    const { restaurant_name, email, password, location } = req.body;
+    const existingRestaurant = await Restaurant.findOne({ where: { email } });
+    if (existingRestaurant) {
+      return res.status(400).json({ message: 'Email already taken' });
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    
     const newRestaurant = await Restaurant.create({
-      name,
+      restaurant_name,
       email,
       password: hashedPassword,
       location
     });
 
-    res.status(201).json({ message: "Customer registered successfully", Restaurant: newRestaurant });
+    res.status(201).json({ message: "Restaurant registered successfully", Restaurant: newRestaurant });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Customer Login
+// Restaurant Login
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const customer = await Customer.findOne({ where: { email } });
-    console.log(customer)
-    if (!customer || !(await bcrypt.compare(password, customer.password))) {
+    const restaurant = await Restaurant.findOne({ where: { email } });
+    if (!restaurant || !(await bcrypt.compare(password, restaurant.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    req.session.customerId = customer.customer_id;
-    res.status(200).json({ message: "Login successful", customer });
+    req.session.restaurantId = restaurant.restaurant_id;
+    res.status(200).json({ message: "Login successful", restaurant });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -57,10 +60,10 @@ exports.logout = (req, res) => {
 // Get Profile
 exports.getProfile = async (req, res) => {
   try {
-    const customer = await Customer.findByPk(req.session.customerId);
-    if (!customer) return res.status(404).json({ message: "Customer not found" });
+    const restaurant = await Restaurant.findByPk(req.session.restaurantId);
+    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
 
-    res.json(customer);
+    res.json(restaurant);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -71,7 +74,7 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const { name, country, state } = req.body;
-    await Customer.update({ name, country, state }, { where: { customer_id: req.session.customerId } });
+    await Restaurant.update({ name, country, state }, { where: { restaurant_id: req.session.restaurantId } });
 
     res.json({ message: "Profile updated successfully" });
   } catch (error) {
@@ -95,11 +98,11 @@ exports.updateProfilePicture = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
     const filePath = `/uploads/${req.file.filename}`;
-    await Customer.update(
+    await Restaurant.update(
       { profile_picture: filePath },
-      { where: { customer_id: req.session.customerId } } 
+      { where: { restaurant_id: req.session.restaurantId } } 
     );
-    console.log(req.session.customerId);
+    console.log(req.session.restaurantId);
     res.json({ message: "Profile picture uploaded successfully", filePath });
   } catch (error) {
     res.status(500).json({ error: error.message });
