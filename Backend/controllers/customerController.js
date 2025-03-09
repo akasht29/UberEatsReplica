@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { Customer, Restaurant, Favourite, Cart, Dish } = require("../models");
+const { Customer, Restaurant, Favourite, Cart, Dish, Order, OrderItem } = require("../models");
 const multer = require("multer");
 const path = require("path");
 const session = require("express-session");
@@ -47,12 +47,12 @@ exports.login = async (req, res) => {
 // Logout
 exports.logout = (req, res) => {
   req.session.destroy((err) => {
-      if (err) {
-          return res.status(500).json({ error: "Logout failed" });
-      }
-      console.log('Session destroyed');
-      res.clearCookie('connect.sid'); //for testing
-      res.status(200).json({ message: "Logout successful" });
+    if (err) {
+      return res.status(500).json({ error: "Logout failed" });
+    }
+    console.log('Session destroyed');
+    res.clearCookie('connect.sid'); //for testing
+    res.status(200).json({ message: "Logout successful" });
   });
 };
 
@@ -84,13 +84,13 @@ exports.updateProfile = async (req, res) => {
 
 // Multer storage for profile picture
 const storage = multer.diskStorage({
-  destination:"/uploads/",
+  destination: "/uploads/",
   filename: (req, file, cb) => {
     cb(null, $date.now() + file.originalname);
   }
 })
 
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
 // Update Profile Picture
 exports.updateProfilePicture = async (req, res) => {
   try {
@@ -100,7 +100,7 @@ exports.updateProfilePicture = async (req, res) => {
     const filePath = `/uploads/${req.file.filename}`;
     await Customer.update(
       { profile_picture: filePath },
-      { where: { customer_id: req.session.customerId } } 
+      { where: { customer_id: req.session.customerId } }
     );
     console.log(req.session.customerId);
     res.json({ message: "Profile picture uploaded successfully", filePath });
@@ -119,39 +119,35 @@ exports.getRestaurants = async (req, res) => {
   }
 };
 
-// Add to Cart
-const models = require('../models'); // Import your Sequelize models
-const restaurant = require("../models/restaurant");
-
 // Add a dish to the cart
 exports.addToCart = async (req, res) => {
   try {
-    const { dish_id, quantity } = req.body; 
-    const dish = await models.Dish.findByPk(dish_id);
+    const { dish_id, quantity } = req.body;
+    const dish = await Dish.findByPk(dish_id);
     if (!dish) {
       return res.status(404).json({ message: "Dish not found." });
     }
 
-    // Check if the dish is already in the cart
-    let cartItem = await models.Cart.findOne({
+
+    let cartItem = await Cart.findOne({
       where: {
         customer_id: req.session.customerId,
         dish_id: dish_id
       }
     });
 
-    // If the dish is already in the cart, update the quantity
+
     if (cartItem) {
-      cartItem.quantity += quantity; // Increment the quantity
+      cartItem.quantity += quantity;
       await cartItem.save();
     } else {
-      // Otherwise, create a new cart item
-      cartItem = await models.Cart.create({
+ 
+      cartItem = await Cart.create({
         restaurant_id: dish.restaurant_id,
         customer_id: req.session.customerId,
         dish_id: dish_id,
         quantity,
-        price: dish.price // Store the price of the dish at the time of adding to the cart
+        price: dish.price 
       });
     }
     res.status(200).json({
@@ -169,57 +165,57 @@ exports.addToCart = async (req, res) => {
 };
 
 
-// View Cart
+
 // View all items in the customer's cart
 exports.viewCart = async (req, res) => {
   try {
-    const customerId = req.session.customerId;  // Assuming customer ID is available in the session or JWT
+    const customerId = req.session.customerId;  
 
-    // Fetch cart items for the specific customer and include related Dish and Restaurant details
+  
     const cartItems = await Cart.findAll({
       where: { customer_id: customerId },
       include: [
         {
           model: Dish,
-          attributes: ['dish_id', 'name', 'price'],  // Only necessary details
+          attributes: ['dish_id', 'name', 'price'],  
         },
         {
           model: Restaurant,
-          attributes: ['restaurant_id', 'restaurant_name'],  // Only necessary details
+          attributes: ['restaurant_id', 'restaurant_name'],  
         },
       ],
     });
 
-    // Group the cart items by restaurant
+
     const groupedByRestaurant = cartItems.reduce((acc, cartItem) => {
       const { restaurant_id, restaurant_name: restaurantName } = cartItem.Restaurant;
       const { name: dishName, price } = cartItem.Dish;
       const quantity = cartItem.quantity;
 
-      // If restaurant not in accumulator, initialize it
+   
       if (!acc[restaurant_id]) {
         acc[restaurant_id] = {
           restaurantName,
           dishes: [],
-          totalPrice: 0,  // Track total price for the restaurant
+          totalPrice: 0,  
         };
       }
 
-      // Add dish to the restaurant's list of dishes in the cart
+      
       acc[restaurant_id].dishes.push({
         dishName,
         price,
         quantity,
-        totalPrice: price * quantity,  // Price * quantity for total price of the dish
+        totalPrice: price * quantity,  
       });
 
-      // Update total price for the restaurant
+      
       acc[restaurant_id].totalPrice += price * quantity;
 
       return acc;
     }, {});
 
-    // Return the grouped cart items as a response
+   
     return res.status(200).json({
       success: true,
       data: groupedByRestaurant,
@@ -236,79 +232,76 @@ exports.viewCart = async (req, res) => {
 // Checkout the cart
 exports.checkoutCart = async (req, res) => {
   try {
-    const customerId = req.session.customerId; // Get customer ID from session or JWT
+    const customerId = req.session.customerId; // Assuming customer is authenticated via session
+    const restaurantId = req.body.restaurant_id;
 
-    // Start a transaction to ensure atomicity
-    const transaction = await models.sequelize.transaction();
-
-    // Fetch all cart items for the customer
-    const cartItems = await models.Cart.findAll({
-      where: { customer_id: customerId },
-      include: [{
-        model: models.Dish, // Include dish details
-        attributes: ['price', 'name', 'description']
-      }],
-      transaction // Use the transaction
+    // Fetch cart items for the specific customer and restaurant
+    const cartItems = await Cart.findAll({
+      where: { customer_id: customerId, restaurant_id: restaurantId },
+      include: [{ model: Dish }]
     });
 
-    if (!cartItems || cartItems.length === 0) {
-      return res.status(400).json({ message: "Your cart is empty." });
+    if (cartItems.length === 0) {
+      return res.status(400).json({ message: "Cart is empty!" });
     }
 
-    // 1. Create an order in the orders table
-    const order = await models.Order.create({
-      customer_id: customerId,
-      status: 'Pending', // Default status when the order is created
-      total_price: 0, // We will calculate this next
-    }, { transaction });
-
-    // 2. Add items from the cart to the order_items table
+    // Calculate total price of the cart
     let totalPrice = 0;
-    const orderItems = cartItems.map(cartItem => {
-      const price = cartItem.price;
-      const quantity = cartItem.quantity;
-      totalPrice += price * quantity;
-
+    const orderItems = cartItems.map(item => {
+      totalPrice += item.Dish.price * item.quantity; // Assuming price is on Dish model
       return {
-        order_id: order.id,
-        dish_id: cartItem.dish_id,
-        quantity,
-        price, // Store the price at the time of checkout
+        dish_id: item.dish_id,
+        quantity: item.quantity,
+        price: item.Dish.price * item.quantity
       };
     });
 
-    // Insert the order items into the order_items table
-    await models.OrderItem.bulkCreate(orderItems, { transaction });
-
-    // 3. Update the order's total price
-    await order.update({ total_price: totalPrice }, { transaction });
-
-    // 4. Clear the cart (optional, if you want to empty the cart after checkout)
-    await models.Cart.destroy({
-      where: { customer_id: customerId },
-      transaction
+    // Create the order in the Orders table
+    const order = await Order.create({
+      customer_id: customerId,
+      restaurant_id: restaurantId,
+      total_price: totalPrice,
+      status: 'Pending'
     });
 
-    // Commit the transaction
-    await transaction.commit();
+    // Create order items in the OrderItems table
+    await OrderItem.bulkCreate(orderItems.map(orderItem => ({
+      ...orderItem,
+      order_id: order.id
+    })));
 
-    res.status(200).json({
-      success: true,
-      message: 'Checkout successful',
-      order
+    // Clear the cart for the customer after checkout
+    await Cart.destroy({ where: { customer_id: customerId, restaurant_id: restaurantId } });
+
+    return res.status(200).json({
+      message: "Order placed successfully!",
+      orderId: order.id,
+      totalPrice
     });
   } catch (error) {
-    console.error('Error during checkout:', error);
-
-    // If there is an error, roll back the transaction
-    await transaction.rollback();
-
-    res.status(500).json({
-      success: false,
-      message: 'Error during checkout'
-    });
+    console.error("Error during checkout:", error);
+    return res.status(500).json({ message: "An error occurred during checkout.", error: error.message });
   }
 };
+
+exports.viewOrders = async(req, res) => {
+  const customerId = req.session.customerId
+  
+
+  const order = await Order.findAll({
+    where: { customer_id: customerId },
+    include: [{ model: OrderItem, include: [Dish] }]
+  });
+
+  if (!order) {
+    return res.status(404).json({ message: "Order not found." });
+  }
+
+  return res.status(200).json({ order });
+}
+
+
+
 
 // Add to Favourites
 exports.addToFavourites = async (req, res) => {
