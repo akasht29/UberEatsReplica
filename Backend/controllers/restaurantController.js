@@ -73,8 +73,8 @@ exports.getProfile = async (req, res) => {
 // Update Profile
 exports.updateProfile = async (req, res) => {
   try {
-    const { name, country, state } = req.body;
-    await Restaurant.update({ name, country, state }, { where: { restaurant_id: req.session.restaurantId } });
+    const { name, country, state, location, description, contact_info, timings  } = req.body;
+    await Restaurant.update({ name, country, state, location, description, contact_info, timings }, { where: { restaurant_id: req.session.restaurantId } });
 
     res.json({ message: "Profile updated successfully" });
   } catch (error) {
@@ -99,7 +99,7 @@ exports.updateProfilePicture = async (req, res) => {
     }
     const filePath = `/uploads/${req.file.filename}`;
     await Restaurant.update(
-      { profile_picture: filePath },
+      { images: filePath },
       { where: { restaurant_id: req.session.restaurantId } } 
     );
     console.log(req.session.restaurantId);
