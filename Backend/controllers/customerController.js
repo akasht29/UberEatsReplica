@@ -4,14 +4,13 @@ const multer = require("multer");
 const path = require("path");
 const session = require("express-session");
 
-
 // Customer Signup
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const existingCustomer = await Customer.findOne({ where: { email } });
     if (existingCustomer) {
-      return res.status(400).json({ message: 'Email already taken' });
+      return res.status(400).json({ message: "Email already taken" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -21,7 +20,10 @@ exports.signup = async (req, res) => {
       password: hashedPassword,
     });
 
-    res.status(201).json({ message: "Customer registered successfully", customer: newCustomer });
+    res.status(201).json({
+      message: "Customer registered successfully",
+      customer: newCustomer,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -32,12 +34,13 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const customer = await Customer.findOne({ where: { email } });
-    console.log(customer)
+    console.log(customer);
     if (!customer || !(await bcrypt.compare(password, customer.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     req.session.customerId = customer.customer_id;
+    console.log("req.session.customerId", req.session.customerId);
     res.status(200).json({ message: "Login successful", customer });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -56,12 +59,12 @@ exports.logout = (req, res) => {
   });
 };
 
-
 // Get Profile
 exports.getProfile = async (req, res) => {
   try {
     const customer = await Customer.findByPk(req.session.customerId);
-    if (!customer) return res.status(404).json({ message: "Customer not found" });
+    if (!customer)
+      return res.status(404).json({ message: "Customer not found" });
 
     res.json(customer);
   } catch (error) {
@@ -69,12 +72,14 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-
 // Update Profile
 exports.updateProfile = async (req, res) => {
   try {
     const { name, country, state } = req.body;
-    await Customer.update({ name, country, state }, { where: { customer_id: req.session.customerId } });
+    await Customer.update(
+      { name, country, state },
+      { where: { customer_id: req.session.customerId } }
+    );
 
     res.json({ message: "Profile updated successfully" });
   } catch (error) {
@@ -87,8 +92,8 @@ const storage = multer.diskStorage({
   destination: "/uploads/",
   filename: (req, file, cb) => {
     cb(null, $date.now() + file.originalname);
-  }
-})
+  },
+});
 
 const upload = multer({ storage: storage });
 // Update Profile Picture
@@ -112,6 +117,7 @@ exports.updateProfilePicture = async (req, res) => {
 // Get Restaurants
 exports.getRestaurants = async (req, res) => {
   try {
+    console.log("in get restaurants");
     const restaurants = await Restaurant.findAll();
     res.json(restaurants);
   } catch (error) {
@@ -134,6 +140,7 @@ exports.addToCart = async (req, res) => {
         customer_id: req.session.customerId,
         dish_id: dish_id
       }
+
     });
 
 
@@ -219,6 +226,7 @@ exports.viewCart = async (req, res) => {
       success: true,
       data: groupedByRestaurant,
     });
+
   } catch (error) {
     console.error('Error fetching cart items grouped by restaurant:', error);
     return res.status(500).json({
@@ -318,6 +326,7 @@ exports.addToFavorites = async (req, res) => {
 exports.getFavorites = async (req, res) => {
   try {
     const favourites = await Favorite.findAll({ where: { customer_id: req.session.customerId } });
+
     res.json(favourites);
   } catch (error) {
     res.status(500).json({ error: error.message });

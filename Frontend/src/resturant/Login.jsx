@@ -1,41 +1,87 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Form submitted");
+
+    setError("");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/restaurant/login",
+        {
+          email,
+          password,
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        navigate("/resturantprofile");
+      }
+    } catch (err) {
+      setError("Invalid credentials");
+    }
+  };
+
   return (
-    <div>
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-md-6 col-lg-4">
-            <h1 className=" text-center mb-4">Login</h1>
-            <form>
-              <div className="mb-3">
-                <label className="form-label">Username</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="username"
-                  name="username"
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  name="password"
-                  required
-                />
-              </div>
-              <div className="d-grid">
-                <button type="submit" className="btn text-white btn-dark">
-                  Login
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>{" "}
+    <div
+      className="container d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh" }}
+    >
+      <div className="card" style={{ width: "100%", maxWidth: "400px" }}>
+        <div className="card-body">
+          <h2 className="text-center mb-4">Login</h2>
+
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">
+                Email
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            {error && <div className="alert alert-danger">{error}</div>}
+
+            <button type="submit" className="btn btn-primary w-100">
+              Log In
+            </button>
+          </form>
+
+          <p className="mt-3 text-center">
+            Don't have an account? <a href="/signup">Sign up</a>
+          </p>
+        </div>
       </div>
     </div>
   );

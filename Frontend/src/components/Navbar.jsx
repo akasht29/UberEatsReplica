@@ -1,8 +1,31 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    console.log("Form submitted");
+
+    setError("");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/customer/logout",
+        {}
+      );
+      if (response.status === 200) {
+        navigate("/customerlogin");
+      }
+    } catch (err) {
+      setError("Invalid credentials");
+    }
+  };
 
   return (
     <>
@@ -105,7 +128,7 @@ const Navbar = () => {
               <button
                 className="btn bg-white"
                 type="button"
-                onClick={() => setIsAuthenticated(false)}
+                onClick={handleLogout}
               >
                 Sign Out
               </button>
