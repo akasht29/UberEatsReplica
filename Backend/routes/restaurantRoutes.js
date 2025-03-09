@@ -15,4 +15,7 @@ router.get("/profile", restaurantAuth, restaurantController.getProfile);
 router.put("/profile", restaurantAuth, restaurantController.updateProfile);
 router.put("/profile/picture", restaurantAuth, upload.single("file"), restaurantController.updateProfilePicture);
 
+router.post("/dish", restaurantAuth, restaurantController.addDish);
+router.get("/dish", restaurantAuth, restaurantController.getDishes);
+
 module.exports = router;
