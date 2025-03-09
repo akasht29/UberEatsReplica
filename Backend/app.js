@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { sequelize } = require('./models');
 const customerRoutes = require("./routes/customerRoutes");
+const restaurantRoutes = require("./routes/restaurantRoutes");
+
 const session = require("express-session");
 const app = express();
 app.use(cors());
@@ -16,6 +18,7 @@ app.use(session({
   }));
 app.use('/uploads', express.static('uploads'));
 app.use("/customer", customerRoutes)
+app.use("/restaurant", restaurantRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
