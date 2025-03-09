@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Dish.associate = (models) => {
         Dish.belongsTo(models.Restaurant, { foreignKey: "restaurant_id", onDelete: "CASCADE" });
+        Dish.hasMany(models.Cart, { foreignKey: 'dish_id' });
     };
 
     return Dish;
