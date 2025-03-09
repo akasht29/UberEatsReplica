@@ -1,33 +1,52 @@
 'use strict';
-
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Order_Items', {
-      order_item_id: { 
-        type: Sequelize.INTEGER, 
-        autoIncrement: true, 
-        primaryKey: true 
-      },
-      order_id: { 
-        type: Sequelize.INTEGER, 
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('OrderItems', {
+      id: {
         allowNull: false,
-        references: { model: 'Orders', key: 'order_id' },
-        onDelete: 'CASCADE'
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
-      dish_id: { 
-        type: Sequelize.INTEGER, 
+      order_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'Dishes', key: 'dish_id' },
-        onDelete: 'CASCADE'
+        references: {
+          model: 'Orders', // Ensure the orders table exists first
+          key: 'id',
+        },
+        onDelete: 'CASCADE', // Optional: if an order is deleted, delete its items
       },
-      quantity: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 1 },
-      price: { type: Sequelize.FLOAT, allowNull: false },
-      createdAt: { type: Sequelize.DATE, allowNull: false },
-      updatedAt: { type: Sequelize.DATE, allowNull: false }
+      dish_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Dishes', // Ensure the dishes table exists
+          key: 'dish_id',
+        },
+        onDelete: 'CASCADE',
+      },
+      quantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      price: {
+        type: Sequelize.FLOAT,
+        allowNull: false,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
     });
   },
-
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Order_Items');
-  }
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('OrderItems');
+  },
 };

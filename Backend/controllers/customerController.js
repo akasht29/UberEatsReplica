@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { Customer, Restaurant, Favourite, Cart } = require("../models");
+const { Customer, Restaurant, Favorite, Cart, Dish, Order, OrderItem } = require("../models");
 const multer = require("multer");
 const path = require("path");
 const session = require("express-session");
@@ -53,8 +53,8 @@ exports.logout = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Logout failed" });
     }
-    console.log("Session destroyed");
-    res.clearCookie("connect.sid"); //for testing
+    console.log('Session destroyed');
+    res.clearCookie('connect.sid'); //for testing
     res.status(200).json({ message: "Logout successful" });
   });
 };
@@ -125,65 +125,208 @@ exports.getRestaurants = async (req, res) => {
   }
 };
 
-// Add to Cart
+// Add a dish to the cart
 exports.addToCart = async (req, res) => {
   try {
     const { dish_id, quantity } = req.body;
-    await Cart.create({
-      customer_id: req.session.customerId,
-      dish_id,
-      quantity,
+    const dish = await Dish.findByPk(dish_id);
+    if (!dish) {
+      return res.status(404).json({ message: "Dish not found." });
+    }
+
+
+    let cartItem = await Cart.findOne({
+      where: {
+        customer_id: req.session.customerId,
+        dish_id: dish_id
+      }
+
     });
 
-    res.json({ message: "Item added to cart" });
+
+    if (cartItem) {
+      cartItem.quantity += quantity;
+      await cartItem.save();
+    } else {
+ 
+      cartItem = await Cart.create({
+        restaurant_id: dish.restaurant_id,
+        customer_id: req.session.customerId,
+        dish_id: dish_id,
+        quantity,
+        price: dish.price 
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Dish added to cart successfully',
+      cartItem
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error adding item to cart:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding item to cart'
+    });
   }
 };
 
-// View Cart
+
+
+// View all items in the customer's cart
 exports.viewCart = async (req, res) => {
   try {
-    const cart = await Cart.findAll({
-      where: { customerId: req.session.customerId },
+    const customerId = req.session.customerId;  
+
+  
+    const cartItems = await Cart.findAll({
+      where: { customer_id: customerId },
+      include: [
+        {
+          model: Dish,
+          attributes: ['dish_id', 'name', 'price'],  
+        },
+        {
+          model: Restaurant,
+          attributes: ['restaurant_id', 'restaurant_name'],  
+        },
+      ],
     });
-    res.json(cart);
+
+
+    const groupedByRestaurant = cartItems.reduce((acc, cartItem) => {
+      const { restaurant_id, restaurant_name: restaurantName } = cartItem.Restaurant;
+      const { name: dishName, price } = cartItem.Dish;
+      const quantity = cartItem.quantity;
+
+   
+      if (!acc[restaurant_id]) {
+        acc[restaurant_id] = {
+          restaurantName,
+          dishes: [],
+          totalPrice: 0,  
+        };
+      }
+
+      
+      acc[restaurant_id].dishes.push({
+        dishName,
+        price,
+        quantity,
+        totalPrice: price * quantity,  
+      });
+
+      acc[restaurant_id].totalPrice += price * quantity;
+
+      return acc;
+    }, {});
+
+   
+    return res.status(200).json({
+      success: true,
+      data: groupedByRestaurant,
+    });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching cart items grouped by restaurant:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching cart items grouped by restaurant',
+    });
+  }
+}
+
+// Checkout the cart
+exports.checkoutCart = async (req, res) => {
+  try {
+    const customerId = req.session.customerId; // Assuming customer is authenticated via session
+    const restaurantId = req.body.restaurant_id;
+
+    // Fetch cart items for the specific customer and restaurant
+    const cartItems = await Cart.findAll({
+      where: { customer_id: customerId, restaurant_id: restaurantId },
+      include: [{ model: Dish }]
+    });
+
+    if (cartItems.length === 0) {
+      return res.status(400).json({ message: "Cart is empty!" });
+    }
+
+    // Calculate total price of the cart
+    let totalPrice = 0;
+    const orderItems = cartItems.map(item => {
+      totalPrice += item.Dish.price * item.quantity; // Assuming price is on Dish model
+      return {
+        dish_id: item.dish_id,
+        quantity: item.quantity,
+        price: item.Dish.price * item.quantity
+      };
+    });
+
+    // Create the order in the Orders table
+    const order = await Order.create({
+      customer_id: customerId,
+      restaurant_id: restaurantId,
+      total_price: totalPrice,
+      status: 'Pending'
+    });
+
+    // Create order items in the OrderItems table
+    await OrderItem.bulkCreate(orderItems.map(orderItem => ({
+      ...orderItem,
+      order_id: order.id
+    })));
+
+    // Clear the cart for the customer after checkout
+    await Cart.destroy({ where: { customer_id: customerId, restaurant_id: restaurantId } });
+
+    return res.status(200).json({
+      message: "Order placed successfully!",
+      orderId: order.id,
+      totalPrice
+    });
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    return res.status(500).json({ message: "An error occurred during checkout.", error: error.message });
   }
 };
 
-// Checkout
-exports.checkout = async (req, res) => {
-  try {
-    await Cart.destroy({ where: { customerId: req.session.customerId } });
-    res.json({ message: "Checkout successful" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+exports.viewOrders = async(req, res) => {
+  const customerId = req.session.customerId
+  
+
+  const order = await Order.findAll({
+    where: { customer_id: customerId },
+    include: [{ model: OrderItem, include: [Dish] }]
+  });
+
+  if (!order) {
+    return res.status(404).json({ message: "Order not found." });
   }
-};
+
+  return res.status(200).json({ order });
+}
+
+
+
 
 // Add to Favourites
-exports.addToFavourites = async (req, res) => {
+exports.addToFavorites = async (req, res) => {
   try {
-    const { restaurantId } = req.body;
-    await Favourite.create({
-      customerId: req.session.customerId,
-      restaurantId,
-    });
+    const { restaurant_id } = req.body;
+    await Favorite.create({ customer_id: req.session.customerId, restaurant_id });
 
-    res.json({ message: "Added to favourites" });
+    res.json({ message: "Added to favorites" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
 // Get Favourites
-exports.getFavourites = async (req, res) => {
+exports.getFavorites = async (req, res) => {
   try {
-    const favourites = await Favourite.findAll({
-      where: { customerId: req.session.customerId },
-    });
+    const favourites = await Favorite.findAll({ where: { customer_id: req.session.customerId } });
+
     res.json(favourites);
   } catch (error) {
     res.status(500).json({ error: error.message });

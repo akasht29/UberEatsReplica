@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 const customerController = require("../controllers/customerController");
 const { customerAuth } = require("../middleware/authMiddleware");
@@ -25,10 +24,11 @@ router.put(
 router.get("/restaurants", customerAuth, customerController.getRestaurants);
 router.post("/cart/add", customerAuth, customerController.addToCart);
 router.get("/cart", customerAuth, customerController.viewCart);
-router.post("/cart/checkout", customerAuth, customerController.checkout);
+router.post("/cart/checkout", customerAuth, customerController.checkoutCart);
+router.get("/orders", customerAuth, customerController.viewOrders);
 
 // Favourites
-router.post("/favourites", customerAuth, customerController.addToFavourites);
-router.get("/favourites", customerAuth, customerController.getFavourites);
+router.post("/favorites", customerAuth, customerController.addToFavorites);
+router.get("/favorites", customerAuth, customerController.getFavorites);
 
 module.exports = router;
