@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { Customer, Restaurant, Favourite, Cart, Dish, Order, OrderItem } = require("../models");
+const { Customer, Restaurant, Favorite, Cart, Dish, Order, OrderItem } = require("../models");
 const multer = require("multer");
 const path = require("path");
 const session = require("express-session");
@@ -209,7 +209,6 @@ exports.viewCart = async (req, res) => {
         totalPrice: price * quantity,  
       });
 
-      
       acc[restaurant_id].totalPrice += price * quantity;
 
       return acc;
@@ -304,21 +303,21 @@ exports.viewOrders = async(req, res) => {
 
 
 // Add to Favourites
-exports.addToFavourites = async (req, res) => {
+exports.addToFavorites = async (req, res) => {
   try {
-    const { restaurantId } = req.body;
-    await Favourite.create({ customerId: req.session.customerId, restaurantId });
+    const { restaurant_id } = req.body;
+    await Favorite.create({ customer_id: req.session.customerId, restaurant_id });
 
-    res.json({ message: "Added to favourites" });
+    res.json({ message: "Added to favorites" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
 // Get Favourites
-exports.getFavourites = async (req, res) => {
+exports.getFavorites = async (req, res) => {
   try {
-    const favourites = await Favourite.findAll({ where: { customerId: req.session.customerId } });
+    const favourites = await Favorite.findAll({ where: { customer_id: req.session.customerId } });
     res.json(favourites);
   } catch (error) {
     res.status(500).json({ error: error.message });

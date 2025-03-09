@@ -24,7 +24,7 @@ router.post("/cart/checkout", customerAuth, customerController.checkoutCart);
 router.get("/orders", customerAuth, customerController.viewOrders);
 
 // Favourites
-router.post("/favourites", customerAuth, customerController.addToFavourites);
-router.get("/favourites", customerAuth, customerController.getFavourites);
+router.post("/favorites", customerAuth, customerController.addToFavorites);
+router.get("/favorites", customerAuth, customerController.getFavorites);
 
 module.exports = router;
