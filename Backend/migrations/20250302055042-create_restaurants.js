@@ -8,7 +8,7 @@ module.exports = {
         autoIncrement: true, 
         primaryKey: true 
       },
-      name: { type: Sequelize.STRING, allowNull: false },
+      restaurant_name: { type: Sequelize.STRING, allowNull: false },
       email: { type: Sequelize.STRING, unique: true, allowNull: false },
       password: { type: Sequelize.STRING, allowNull: false },
       location: { type: Sequelize.STRING, allowNull: false },
