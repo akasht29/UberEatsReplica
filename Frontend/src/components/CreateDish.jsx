@@ -5,8 +5,12 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 
 // const CreateDish = () => {
-//   const [author, setAuthor] = useState("");
-//   const [title, setTitle] = useState("");
+//   const [name, setName] = useState("");
+//   const [ingredients, setIngredients] = useState([]);
+//	 const [image, setImage] = useState("")
+//	 const [price, setPrice] = useState(0)
+//	 const [description, setDescription] = useState("")
+//	 const [category, setCategory] = useState("")
 //   const dispatch = useDispatch();
 
 //   const navigate = useNavigate();

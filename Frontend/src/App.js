@@ -9,7 +9,7 @@ import Cart from "./customer/Cart";
 import ResturantProfile from "./resturant/Profile";
 import ResturantSignUp from "./resturant/SignUp";
 import ResturantLogin from "./resturant/Login";
-import Orders from "./resturant/Login";
+import Orders from "./resturant/Orders";
 import Home from "./Home";
 import Navbar from "./components/Navbar";
 import CreateDish from "./components/CreateDish";
