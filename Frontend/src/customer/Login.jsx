@@ -22,6 +22,7 @@ const Login = () => {
           password,
         }
       );
+      console.log(response);
       if (response.status === 200) {
         navigate("/dashboard");
       }

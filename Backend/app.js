@@ -28,6 +28,14 @@ app.use(
   })
 );
 
+app.get("/customer/check-auth", (req, res) => {
+  if (req.session.customer_id) {
+    res.status(200).json({ authenticated: true });
+  } else {
+    res.status(401).json({ authenticated: false });
+  }
+});
+
 app.use((req, res, next) => {
   console.log("Session Debug:", req.session); // Log session details
   next();

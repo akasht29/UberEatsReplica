@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
 
 const countries = [
-  { value: "US", label: "United States" },
-  { value: "CA", label: "Canada" },
-  { value: "GB", label: "United Kingdom" },
-  { value: "IN", label: "India" },
-  { value: "AU", label: "Australia" },
-  { value: "DE", label: "Germany" },
-  { value: "FR", label: "France" },
-  { value: "BR", label: "Brazil" },
-  { value: "ZA", label: "South Africa" },
-  { value: "JP", label: "Japan" },
+  { value: "United States", label: "United States" },
+  { value: "Canada", label: "Canada" },
+  { value: "United Kingdom", label: "United Kingdom" },
+  { value: "India", label: "India" },
+  { value: "Australia", label: "Australia" },
+  { value: "Germany", label: "Germany" },
+  { value: "France", label: "France" },
+  { value: "Brazil", label: "Brazil" },
+  { value: "South Africa", label: "South Africa" },
+  { value: "Japan", label: "Japan" },
 ];
 
 const Profile = () => {
@@ -22,10 +22,13 @@ const Profile = () => {
     email: "",
     country: "",
     state: "",
+    profile_picture: "",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [edit, setEdit] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [showFileInput, setShowFileInput] = useState(false); // State to control visibility of file input
 
   const fetchProfileInfo = async () => {
     try {
@@ -55,9 +58,12 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    const updatedValue = name === "state" ? value.toUpperCase() : value;
+
     setProfileInfo((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -70,11 +76,7 @@ const Profile = () => {
       state: profileInfo.state,
     };
 
-    console.log("Profile data being sent:", profileData);
-
     try {
-      console.log("Sending profile update request...");
-
       const response = await axios.put(
         "http://localhost:3000/customer/profile",
         profileData, // Send data as JSON
@@ -86,20 +88,41 @@ const Profile = () => {
         }
       );
 
-      console.log("Profile update response:", response.data);
       if (response.status === 200) {
-        // Refetch the updated profile after saving changes
-        fetchProfileInfo(); // This will fetch the updated profile data
+        fetchProfileInfo(); // Refetch the updated profile after saving changes
         setEdit(false); // Exit edit mode here
       }
     } catch (err) {
       console.error("Error updating profile:", err);
-      if (err.response && err.response.status === 401) {
-        setError("You are not authenticated. Please log in.");
-        navigate("/customerlogin");
-      } else {
-        setError("Failed to update profile. Please try again later.");
+      setError("Failed to update profile. Please try again later.");
+    }
+  };
+
+  const handleProfilePictureChange = async (e) => {
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+
+    try {
+      const response = await axios.put(
+        "http://localhost:3000/customer/profile/picture",
+        formData, // Send the image file
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data", // Handle file uploads
+          },
+        }
+      );
+      if (response.status === 200) {
+        setProfileInfo((prev) => ({
+          ...prev,
+          profile_picture: response.data.filePath, // Update profile picture URL
+        }));
+        setShowFileInput(false); // Hide file input after successful upload
       }
+    } catch (err) {
+      console.error("Error updating profile picture:", err);
+      setError("Failed to update profile picture. Please try again.");
     }
   };
 
@@ -113,7 +136,11 @@ const Profile = () => {
           // View Mode
           <div className="text-center">
             <img
-              src={profileInfo.profile_picture || "/profileInfo.jpg"}
+              src={
+                profileInfo.profile_picture
+                  ? `http://localhost:3000${profileInfo.profile_picture}`
+                  : "/profileInfo.jpg"
+              }
               alt="Profile"
               className="rounded-circle mb-3"
               style={{ width: "100px", height: "100px", objectFit: "cover" }}
@@ -131,6 +158,26 @@ const Profile = () => {
             >
               Edit Profile
             </button>
+
+            {/* Profile Picture Update Button */}
+            <button
+              className="btn btn-secondary mt-3"
+              onClick={() => setShowFileInput(!showFileInput)} // Toggle file input visibility
+            >
+              Edit Profile Picture
+            </button>
+
+            {/* Conditionally show the file input */}
+            {showFileInput && (
+              <div className="mt-3">
+                <input
+                  type="file"
+                  onChange={handleProfilePictureChange}
+                  accept="image/*"
+                  className="form-control"
+                />
+              </div>
+            )}
           </div>
         ) : (
           // Edit Mode
