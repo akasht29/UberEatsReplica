@@ -7,6 +7,7 @@ const customerRoutes = require("./routes/customerRoutes");
 const restaurantRoutes = require("./routes/restaurantRoutes");
 
 const session = require("express-session");
+const restaurant = require('./models/restaurant');
 const app = express();
 app.use(cors({
   origin: 'http://localhost:3000', 
@@ -22,6 +23,25 @@ app.use(session({
 app.use('/uploads', express.static('uploads'));
 app.use("/customer", customerRoutes)
 app.use("/restaurant", restaurantRoutes)
+
+
+
+
+app.get('/api/customer', (req, res) => {
+  if (req.session.customerId) {
+    res.json({ customerId: req.session.customerId });
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+});
+
+app.get('/api/restaurant', (req, res) => {
+  if (req.session.restaurantId) {
+    res.json({ restaurantId: req.session.restaurantId });
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
