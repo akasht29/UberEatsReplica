@@ -122,8 +122,8 @@ exports.getRestaurants = async (req, res) => {
 // Add to Cart
 exports.addToCart = async (req, res) => {
   try {
-    const { dishId, quantity } = req.body;
-    await Cart.create({ customerId: req.session.customerId, dishId, quantity });
+    const { dish_id, quantity } = req.body;
+    await Cart.create({ customer_id: req.session.customerId, dish_id, quantity });
 
     res.json({ message: "Item added to cart" });
   } catch (error) {

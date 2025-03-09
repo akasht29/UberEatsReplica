@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     Customer.associate = (models) => {
         Customer.hasMany(models.Order, { foreignKey: "customer_id" });
         Customer.hasMany(models.Favorite, { foreignKey: "customer_id" });
-        Customer.hasMany(models.Cart, { foreignKey: "customerId"});
         Customer.hasMany(models.Cart, { foreignKey: 'customer_id' });
     };
 
