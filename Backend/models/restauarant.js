@@ -3,11 +3,11 @@ module.exports = (sequelize, DataTypes) => {
         restaurant_id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
         name: { type: DataTypes.STRING, allowNull: false },
         email: { type: DataTypes.STRING, unique: true, allowNull: false },
-        password_hash: { type: DataTypes.STRING, allowNull: false },
+        password: { type: DataTypes.STRING, allowNull: false },
         location: { type: DataTypes.STRING, allowNull: false },
         description: { type: DataTypes.TEXT },
         contact_info: { type: DataTypes.STRING },
-        image: { type: DataTypes.STRING },
+        images: { type: DataTypes.STRING },
         timings: { type: DataTypes.STRING }
     });
 

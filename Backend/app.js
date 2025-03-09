@@ -3,13 +3,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { sequelize } = require('./models');
-
-
+const customerRoutes = require("./routes/customerRoutes");
+const session = require("express-session");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
-
+app.use(session({
+    secret: "your_secret_key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } 
+  }));
+app.use('/uploads', express.static('uploads'));
+app.use("/customer", customerRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
