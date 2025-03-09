@@ -8,7 +8,10 @@ const restaurantRoutes = require("./routes/restaurantRoutes");
 
 const session = require("express-session");
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  credentials: true                 
+}));
 app.use(bodyParser.json());
 app.use(session({
     secret: "your_secret_key",
