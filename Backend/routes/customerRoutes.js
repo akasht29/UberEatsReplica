@@ -1,4 +1,12 @@
 const express = require("express");
+const {
+  createDish,
+  getAllDishs,
+  getDishById,
+  updateDish,
+  deleteDish,
+} = require("../controllers/dishController");
+
 const router = express.Router();
 const customerController = require("../controllers/customerController");
 const { customerAuth } = require("../middleware/authMiddleware");
@@ -25,5 +33,10 @@ router.post("/cart/checkout", customerAuth, customerController.checkout);
 // Favourites
 router.post("/favourites", customerAuth, customerController.addToFavourites);
 router.get("/favourites", customerAuth, customerController.getFavourites);
+router.post("/", createDish);
+router.get("/", getAllDishs);
+router.get("/:id", getDishById);
+router.put("/:id", updateDish);
+router.delete("/:id", deleteDish);
 
 module.exports = router;
