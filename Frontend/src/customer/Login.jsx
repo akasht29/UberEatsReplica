@@ -1,19 +1,18 @@
-// src/customer/Login.jsx
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // For navigation after login
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Use navigate() for routing
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted"); // Add this line
+    console.log("Form submitted");
 
-    setError(""); // Reset error message
+    setError("");
 
     try {
       const response = await axios.post(
@@ -24,8 +23,7 @@ const Login = () => {
         }
       );
       if (response.status === 200) {
-        // Redirect to profile or home page after login
-        navigate("/dashboard"); // Redirect using navigate()
+        navigate("/dashboard");
       }
     } catch (err) {
       setError("Invalid credentials");

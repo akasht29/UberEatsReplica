@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RestaurantCard from "../components/ResturantCard";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-import axios from "../utils/axiosConfig"; // Import axios config
+import axios from "../utils/axiosConfig";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ const Dashboard = () => {
           }
         );
 
-        console.log("Response:", response.data); // Debugging
+        console.log("Response:", response.data);
         if (response.status === 200) {
           setRestaurants(response.data);
         }
@@ -29,7 +28,7 @@ const Dashboard = () => {
         console.error("Error fetching restaurants:", err);
         if (err.response && err.response.status === 401) {
           setError("You are not authenticated. Please log in.");
-          navigate("/customerlogin"); // Redirect to login if not authenticated
+          navigate("/customerlogin");
         } else {
           setError("Failed to fetch restaurants. Please try again later.");
         }
