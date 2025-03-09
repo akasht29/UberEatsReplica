@@ -5,12 +5,15 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
 
 // const CreateDish = () => {
-//   const [name, setName] = useState("");
-//   const [ingredients, setIngredients] = useState([]);
-//	 const [image, setImage] = useState("")
-//	 const [price, setPrice] = useState(0)
-//	 const [description, setDescription] = useState("")
-//	 const [category, setCategory] = useState("")
+// const [dish, setDish] = useState({
+//   id: 0,
+//   name: "John Doe",
+//   ingredients: [],
+//   image: null,
+//   price: 0,
+//   description: "",
+//   category: "",
+// });
 //   const dispatch = useDispatch();
 
 //   const navigate = useNavigate();

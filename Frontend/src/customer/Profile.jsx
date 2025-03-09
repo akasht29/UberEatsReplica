@@ -16,11 +16,12 @@ const countries = [
 const Profile = () => {
   const [edit, setEdit] = useState(false);
   const [profile, setProfile] = useState({
+    id: 1,
     name: "John Doe",
     email: "jd@test.com",
+    profile_picture: null,
     country: "US",
     state: "CA",
-    picture: null,
   });
 
   const handleStateChange = (e) => {
@@ -40,7 +41,7 @@ const Profile = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setProfile((prev) => ({ ...prev, picture: file }));
+    setProfile((prev) => ({ ...prev, profile_picture: file }));
   };
 
   return (
@@ -53,8 +54,8 @@ const Profile = () => {
           <div className="text-center">
             <img
               src={
-                profile.picture
-                  ? URL.createObjectURL(profile.picture)
+                profile.profile_picture
+                  ? URL.createObjectURL(profile.profile_picture)
                   : "/profile.jpg"
               }
               alt="Profile"
