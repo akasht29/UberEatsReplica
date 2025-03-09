@@ -11,6 +11,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted"); // Add this line
+
     setError(""); // Reset error message
 
     try {
@@ -23,7 +25,7 @@ const Login = () => {
       );
       if (response.status === 200) {
         // Redirect to profile or home page after login
-        // navigate("/dashboard"); // Redirect using navigate()
+        navigate("/dashboard"); // Redirect using navigate()
       }
     } catch (err) {
       setError("Invalid credentials");

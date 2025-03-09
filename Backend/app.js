@@ -11,7 +11,6 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:3001",
-    methods: "GET, POST",
     credentials: true,
   })
 );
@@ -21,7 +20,11 @@ app.use(
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: {
+      httpOnly: true,
+      secure: false, // Set to `true` in production (with HTTPS)
+      sameSite: "lax", // Use "none" if frontend & backend are on different origins
+    },
   })
 );
 

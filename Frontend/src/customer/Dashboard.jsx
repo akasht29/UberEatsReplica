@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import RestaurantCard from "../components/ResturantCard";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
+import axios from "../utils/axiosConfig"; // Import axios config
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -17,7 +18,6 @@ const Dashboard = () => {
           "http://localhost:3000/customer/restaurants",
           {
             withCredentials: true,
-            timeout: 5000, // 5 seconds timeout
           }
         );
 
