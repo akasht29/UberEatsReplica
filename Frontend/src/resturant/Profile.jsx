@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-
+import Menu from "../components/Menu";
 const Profile = () => {
   const [edit, setEdit] = useState(false);
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "johndoe@example.com",
+    name: "Restaurant",
+    email: "restaurant@example.com",
     phoneNum: "phoneNum",
     location: "location",
     description: "description",
@@ -26,12 +26,11 @@ const Profile = () => {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center">
-      <div className="p-4 w-50  rounded ">
+    <div className=" d-flex justify-content-between">
+      <div className="profile-section p-4 w-25">
         <h1 className="text-center mb-4">Profile</h1>
 
         {!edit ? (
-          // View
           <div className="text-center">
             <img
               src={
@@ -45,7 +44,7 @@ const Profile = () => {
             />
             <p>Name: {profile.name}</p>
             <p>Email: {profile.email}</p>
-            <p>Phone Number:{profile.phoneNum}</p>
+            <p>Phone Number: {profile.phoneNum}</p>
             <p>Location: {profile.location}</p>
             <p>Description: {profile.description}</p>
             <p>Hours: {profile.hours}</p>
@@ -57,7 +56,6 @@ const Profile = () => {
             </button>
           </div>
         ) : (
-          // Edit
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -71,7 +69,7 @@ const Profile = () => {
                 value={profile.name}
                 onChange={handleChange}
                 className="form-control"
-                placeholder="Resturant Name"
+                placeholder="Restaurant Name"
               />
             </div>
             <div className="mb-3">
@@ -91,7 +89,7 @@ const Profile = () => {
                 value={profile.phoneNum}
                 onChange={handleChange}
                 className="form-control"
-                placeholder="phoneNum"
+                placeholder="Phone Number"
               />
             </div>
             <div className="mb-3">
@@ -101,9 +99,9 @@ const Profile = () => {
                 value={profile.location}
                 onChange={handleChange}
                 className="form-control"
-                placeholder="location"
+                placeholder="Location"
               />
-            </div>{" "}
+            </div>
             <div className="mb-3">
               <input
                 type="text"
@@ -111,9 +109,9 @@ const Profile = () => {
                 value={profile.description}
                 onChange={handleChange}
                 className="form-control"
-                placeholder="description"
+                placeholder="Description"
               />
-            </div>{" "}
+            </div>
             <div className="mb-3">
               <input
                 type="text"
@@ -121,7 +119,7 @@ const Profile = () => {
                 value={profile.hours}
                 onChange={handleChange}
                 className="form-control"
-                placeholder="hours"
+                placeholder="Hours"
               />
             </div>
             <div className="mb-3">
@@ -136,6 +134,9 @@ const Profile = () => {
             </button>
           </form>
         )}
+      </div>{" "}
+      <div className="menu-section w-75">
+        <Menu />
       </div>
     </div>
   );
