@@ -140,9 +140,9 @@ const Navbar = () => {
       >
         <div className="offcanvas-body justify-content-center align-items-center h-100">
           {userType === null ? (
-            <div>Not Authenticated View</div>
+            <div>Not Authenticated View {userType}</div>
           ) : (
-            <div>Authenticated View</div>
+            <div>Authenticated View {userType}</div>
           )}
 
           {userType === null ? (

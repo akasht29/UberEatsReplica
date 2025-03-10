@@ -85,7 +85,9 @@ const Login = () => {
               Log In
             </button>
           </form>
-
+          <p className="mt-3 text-center">
+            Restaurant <a href="/restaurantlogin">Restaurant Login</a>
+          </p>
           <p className="mt-3 text-center">
             Don't have an account? <a href="/signup">Sign up</a>
           </p>
