@@ -32,7 +32,7 @@ const Login = () => {
       console.log(response);
       if (response.status === 200) {
         handleSetUserType("restaurant");
-        navigate("/resturantprofile");
+        navigate("/restaurantprofile");
       }
     } catch (err) {
       setError("Invalid credentials");

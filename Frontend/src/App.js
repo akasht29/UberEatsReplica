@@ -6,10 +6,10 @@ import CustomerProfile from "./customer/Profile";
 import Dashboard from "./customer/Dashboard";
 import Favorites from "./customer/Favorites";
 import Cart from "./customer/Cart";
-import ResturantProfile from "./resturant/Profile";
-import ResturantSignUp from "./resturant/SignUp";
-import ResturantLogin from "./resturant/Login";
-import Orders from "./resturant/Orders";
+import RestaurantProfile from "./restaurant/Profile";
+import RestaurantSignUp from "./restaurant/SignUp";
+import RestaurantLogin from "./restaurant/Login";
+import Orders from "./restaurant/Orders";
 import Home from "./Home";
 import Navbar from "./components/Navbar";
 import CreateDish from "./components/CreateDish";
@@ -23,11 +23,11 @@ const App = () => {
           {/* <Route path="/" element={<Home dishs={dishs} />} /> */}
           <Route path="/" element={<Home />} />
           <Route path="/customerlogin" element={<CustomerLogin />} />
-          <Route path="/resturantlogin" element={<ResturantLogin />} />
+          <Route path="/restaurantlogin" element={<RestaurantLogin />} />
           <Route path="/customersignup" element={<CustomerSignUp />} />
-          <Route path="/resturantsignup" element={<ResturantSignUp />} />
+          <Route path="/restaurantsignup" element={<RestaurantSignUp />} />
           <Route path="/customerprofile" element={<CustomerProfile />} />
-          <Route path="/resturantprofile" element={<ResturantProfile />} />
+          <Route path="/restaurantprofile" element={<RestaurantProfile />} />
           <Route path="/createdish" element={<CreateDish />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/orders" element={<Orders />} />

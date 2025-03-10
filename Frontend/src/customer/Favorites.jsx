@@ -1,7 +1,7 @@
 import React from "react";
-import RestaurantCard from "../components/ResturantCard";
+import RestaurantCard from "../components/RestaurantCard";
 const Favorites = () => {
-  const favoriteResturants = [
+  const favoriteRestaurants = [
     {
       id: 1,
       name: "Tasty Bistro",
@@ -27,7 +27,7 @@ const Favorites = () => {
       <h1 className="text-center mb-4">Favorite Restaurants</h1>
 
       <div className="row">
-        {favoriteResturants.map((restaurant) => (
+        {favoriteRestaurants.map((restaurant) => (
           <div className="col-md-4" key={restaurant.id}>
             <RestaurantCard {...restaurant} />
           </div>
