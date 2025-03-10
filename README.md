@@ -11,8 +11,7 @@ DATA 236 Uber replica project
 
 DROP DATABASE IF EXISTS uber_replica; 
 CREATE DATABASE uber_replica; 
-
-6) create migrations?
-7) run npx sequelize-cli db:migrate in the backend terminal
-8) run npx nodemon app.js in the backend terminal
-9) run npm start in the frontend terminal (yes to running on port 3001)
+Update .env with database credentials
+6) run npx sequelize-cli db:migrate in the backend terminal
+7) run npx nodemon app.js in the backend terminal
+8) run npm start in the frontend terminal (yes to running on port 3001)
