@@ -21,12 +21,10 @@ exports.signup = async (req, res) => {
       location,
     });
 
-    res
-      .status(201)
-      .json({
-        message: "Restaurant registered successfully",
-        Restaurant: newRestaurant,
-      });
+    res.status(201).json({
+      message: "Restaurant registered successfully",
+      Restaurant: newRestaurant,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -271,12 +269,10 @@ exports.updateDeliveryStatus = async (req, res) => {
     }
 
     await order.update({ delivery_status });
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Delivery status updated successfully.",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Delivery status updated successfully.",
+    });
   } catch (error) {
     console.error("Error updating delivery status:", error);
     res
@@ -295,16 +291,21 @@ exports.getCustomerByOrderId = async (req, res) => {
       where: { id: orderId, restaurant_id: restaurantId },
       include: {
         model: Customer,
-        attributes: ["customer_id", "name", "email"],
+        attributes: [
+          "customer_id",
+          "name",
+          "email",
+          "profile_picture",
+          "country",
+          "state",
+        ],
       },
     });
 
     if (!order) {
-      return res
-        .status(404)
-        .json({
-          message: "Order not found or does not belong to your restaurant.",
-        });
+      return res.status(404).json({
+        message: "Order not found or does not belong to your restaurant.",
+      });
     }
 
     return res.status(200).json({ customer: order.Customer });

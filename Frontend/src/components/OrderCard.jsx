@@ -20,6 +20,7 @@ const OrderCard = ({
           `http://localhost:3000/restaurant/order/${orderKey}/customer/`
         );
         setCustomerInfo(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching customer info:", error);
       }
@@ -51,14 +52,32 @@ const OrderCard = ({
     <div className="card mb-4 shadow-sm">
       <div className="card-body">
         <h5 className="card-title">
-          Customer ID: {customerInfo?.customer?.customer_id || "N/A"}
-        </h5>
-        <p className="card-text">
           Name: {customerInfo?.customer?.name || "Unknown"}
-          <br />
-          Email: {customerInfo?.customer?.email || "Unknown"}
-        </p>
-
+        </h5>
+        <div className="d-flex justify-content-between align-items-center">
+          <div>
+            <p className="card-text">
+              Email: {customerInfo?.customer?.email || "Unknown"}
+              <br />
+              Country: {customerInfo?.customer?.country || "Unknown"}
+              <br />
+              State: {customerInfo?.customer?.state || "Unknown"}
+            </p>
+          </div>
+          <img
+            src={
+              customerInfo?.customer?.profile_picture
+                ? `http://localhost:3000${customerInfo.customer.profile_picture}`
+                : "/profile.jpg"
+            }
+            alt="Profile"
+            className="rounded-circle ms-auto"
+            style={{ width: "100px", height: "100px", objectFit: "cover" }}
+          />
+        </div>
+        <div className=" mt-5">
+          <strong>Dishes Ordered:</strong>
+        </div>
         <ul className="card-text">
           {OrderItems?.map((item, index) => (
             <li
