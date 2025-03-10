@@ -3,7 +3,7 @@ const router = express.Router();
 const restaurantController = require("../controllers/restaurantController");
 const { restaurantAuth } = require("../middleware/authMiddleware");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "./uploads/" });
 
 
 router.post("/signup", restaurantController.signup);

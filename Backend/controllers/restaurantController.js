@@ -89,7 +89,7 @@ exports.updateProfile = async (req, res) => {
 
 // Multer storage for profile picture
 const storage = multer.diskStorage({
-  destination: "/uploads/",
+  destination: "./uploads/",
   filename: (req, file, cb) => {
     cb(null, $date.now() + file.originalname);
   },
