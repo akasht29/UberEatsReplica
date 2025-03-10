@@ -214,21 +214,57 @@ exports.viewOrders = async (req, res) => {
     return res.status(200).json({ orders });
 }
 
-exports.updateOrderStatus = async (req, res) => {
-    const orderId = req.params.id;
-    const { status } = req.body;
+exports.getDeliveryStatus = async(req, res) => {
+    try {
+        const { status } = req.params;
+        const orders = await Order.findAll({ where: { delivery_status: status } });
 
-    const order = await Order.findByPk(orderId);
+        if (!orders.length) {
+            return res.status(404).json({ message: 'No orders found with this delivery status.' });
+        }
 
-    if (!order) {
-        return res.status(404).json({ message: "Order not found." });
+        res.status(200).json({ success: true, data: orders });
+    } catch (error) {
+        console.error('Error filtering orders:', error);
+        res.status(500).json({ success: false, message: 'Error filtering orders' });
     }
-
-    order.status = status;
-    await order.save();
-
-    return res.status(200).json({ message: "Order status updated." });
 }
+
+exports.updateOrderStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { order_status } = req.body;
+
+        const order = await Order.findByPk(id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
+
+        await order.update({ order_status });
+        res.status(200).json({ success: true, message: 'Order status updated successfully.' });
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ success: false, message: 'Error updating order status' });
+    }
+};
+
+exports.updateDeliveryStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { delivery_status } = req.body;
+
+        const order = await Order.findByPk(id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
+
+        await order.update({ delivery_status });
+        res.status(200).json({ success: true, message: 'Delivery status updated successfully.' });
+    } catch (error) {
+        console.error('Error updating delivery status:', error);
+        res.status(500).json({ success: false, message: 'Error updating delivery status' });
+    }
+};
 
 
 

@@ -23,12 +23,13 @@ router.put(
 // Restaurant Dashboard
 router.get("/restaurants", customerAuth, customerController.getRestaurants);
 router.post("/cart/add", customerAuth, customerController.addToCart);
+router.put("/cart/update", customerAuth, customerController.updateCart);
 router.get("/cart", customerAuth, customerController.viewCart);
 router.post("/cart/checkout", customerAuth, customerController.checkoutCart);
 router.get("/orders", customerAuth, customerController.viewOrders);
 router.get("/restaurant/dishes/:id", customerAuth, customerController.getRestaurantDishes);
 
-// Favourites
+// Favorites
 router.post("/favorites", customerAuth, customerController.addToFavorites);
 router.get("/favorites", customerAuth, customerController.getFavorites);
 

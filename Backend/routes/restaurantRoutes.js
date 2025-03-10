@@ -22,6 +22,9 @@ router.put("/dish/:id", restaurantAuth, upload.single("file"), restaurantControl
 router.get("/dish/:id", restaurantAuth, restaurantController.getDishById);
 
 router.get("/orders", restaurantAuth, restaurantController.viewOrders);
-router.post("/order/status/:id", restaurantAuth, restaurantController.updateOrderStatus);
 router.get("/order/:id/customer", restaurantAuth, restaurantController.getCustomerByOrderId);
+
+router.get('/orders/delivery-status/:status', restaurantController.getDeliveryStatus);
+router.put('/orders/:id/order-status', restaurantController.updateOrderStatus);
+router.put('/orders/:id/delivery-status', restaurantController.updateDeliveryStatus);
 module.exports = router;
