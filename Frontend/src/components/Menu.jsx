@@ -9,7 +9,8 @@ const Menu = () => {
 
   useEffect(() => {
     // Fetch dishes from API
-    axios.get("http://localhost:3000/restaurant/dish")
+    axios
+      .get("http://localhost:3000/restaurant/dish")
       .then((response) => {
         setDishes(response.data);
       })
@@ -20,14 +21,17 @@ const Menu = () => {
 
   const handleDelete = (dishId) => {
     console.log("Deleting dish with ID:", dishId);
-    
-    const confirmDelete = window.confirm("Are you sure you want to delete this dish?");
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this dish?"
+    );
     if (confirmDelete) {
       axios
         .delete(`http://localhost:3000/restaurant/dish/${dishId}`)
         .then(() => {
           // After deletion, fetch the updated dishes list
-          axios.get('http://localhost:3000/restaurant/dish')
+          axios
+            .get("http://localhost:3000/restaurant/dish")
             .then((response) => {
               setDishes(response.data); // Update the state with the new dishes list
               alert("Dish deleted successfully!");
@@ -43,7 +47,6 @@ const Menu = () => {
         });
     }
   };
-  
 
   return (
     <div className="container mt-4">
@@ -55,6 +58,21 @@ const Menu = () => {
           <div className="col-md-4" key={dish.dish_id}>
             <div className="card mb-4 shadow-sm">
               <div className="card-body">
+                <img
+                  src={
+                    dish.image
+                      ? `http://localhost:3000${dish.image}`
+                      : "fallback-image.jpg"
+                  }
+                  alt="dishimage"
+                  className="mb-3"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                />
+
                 <h5 className="card-title">{dish.name}</h5>
                 <p className="card-text">
                   <strong>ID:</strong> {dish.dish_id}
@@ -73,7 +91,7 @@ const Menu = () => {
                   </button>
                   <button
                     className="btn btn-danger"
-                    onClick={() => handleDelete(dish.dish_id)} 
+                    onClick={() => handleDelete(dish.dish_id)}
                   >
                     Delete
                   </button>
