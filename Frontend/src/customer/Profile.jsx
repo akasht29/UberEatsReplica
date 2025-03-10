@@ -27,8 +27,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [edit, setEdit] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [showFileInput, setShowFileInput] = useState(false); // State to control visibility of file input
+  const [showFileInput, setShowFileInput] = useState(false);
 
   const fetchProfileInfo = async () => {
     try {
@@ -38,7 +37,7 @@ const Profile = () => {
       );
 
       if (response.status === 200) {
-        setProfileInfo(response.data); // Update the profile with the fetched data
+        setProfileInfo(response.data);
       }
     } catch (err) {
       if (err.response && err.response.status === 401) {
@@ -53,7 +52,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    fetchProfileInfo(); // Fetch profile when component mounts
+    fetchProfileInfo();
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -81,16 +80,16 @@ const Profile = () => {
         "http://localhost:3000/customer/profile",
         profileData, // Send data as JSON
         {
-          withCredentials: true, // Ensure credentials are sent
+          withCredentials: true,
           headers: {
-            "Content-Type": "application/json", // Make sure we're sending JSON data
+            "Content-Type": "application/json",
           },
         }
       );
 
       if (response.status === 200) {
-        fetchProfileInfo(); // Refetch the updated profile after saving changes
-        setEdit(false); // Exit edit mode here
+        fetchProfileInfo();
+        setEdit(false);
       }
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -105,20 +104,20 @@ const Profile = () => {
     try {
       const response = await axios.put(
         "http://localhost:3000/customer/profile/picture",
-        formData, // Send the image file
+        formData,
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "multipart/form-data", // Handle file uploads
+            "Content-Type": "multipart/form-data",
           },
         }
       );
       if (response.status === 200) {
         setProfileInfo((prev) => ({
           ...prev,
-          profile_picture: response.data.filePath, // Update profile picture URL
+          profile_picture: response.data.filePath,
         }));
-        setShowFileInput(false); // Hide file input after successful upload
+        setShowFileInput(false);
       }
     } catch (err) {
       console.error("Error updating profile picture:", err);
@@ -133,7 +132,6 @@ const Profile = () => {
         {error && <div className="alert alert-danger">{error}</div>}
 
         {!edit ? (
-          // View Mode
           <div className="text-center">
             <img
               src={
@@ -167,7 +165,6 @@ const Profile = () => {
               Edit Profile Picture
             </button>
 
-            {/* Conditionally show the file input */}
             {showFileInput && (
               <div className="mt-3">
                 <input
@@ -180,7 +177,6 @@ const Profile = () => {
             )}
           </div>
         ) : (
-          // Edit Mode
           <form onSubmit={handleProfileChange}>
             <div className="mb-3">
               <input
