@@ -26,6 +26,7 @@ router.post("/cart/add", customerAuth, customerController.addToCart);
 router.get("/cart", customerAuth, customerController.viewCart);
 router.post("/cart/checkout", customerAuth, customerController.checkoutCart);
 router.get("/orders", customerAuth, customerController.viewOrders);
+router.get("/restaurant/dishes/:id", customerAuth, customerController.getRestaurantDishes);
 
 // Favourites
 router.post("/favorites", customerAuth, customerController.addToFavorites);
