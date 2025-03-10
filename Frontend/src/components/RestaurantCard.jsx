@@ -5,7 +5,7 @@ const RestaurantCard = ({
   email,
   location,
   description,
-  contactInfo,
+  contact_info,
   images,
   timings,
 }) => {
@@ -14,9 +14,11 @@ const RestaurantCard = ({
       <div className="row g-0">
         <div className="col-md-4">
           <img
-            src={images}
-            alt={restaurant_name}
-            style={{ height: "100%", width: "100%", objectFit: "cover" }}
+
+            src={images ? `http://localhost:3000${images}` : "/restaurant.jpg"}
+            alt="Profile"
+            className="mb-3"
+            style={{ width: "100px", height: "100px", objectFit: "cover" }}
           />
         </div>
         <div className="col-md-8">
@@ -26,7 +28,8 @@ const RestaurantCard = ({
 
             <div className="d-flex justify-content-between mb-2">
               <p className="card-text">Location:{location}</p>
-              <p className="card-text">Contact: {contactInfo}</p>
+
+              <p className="card-text">Contact: {contact_info}</p>
               <p className="card-text">Hours: {timings}</p>
             </div>
           </div>

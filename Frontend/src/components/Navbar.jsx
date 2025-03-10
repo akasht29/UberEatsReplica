@@ -1,29 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { resetUserType } from "../redux/actions/userActions";
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const userType = useSelector((state) => state.user.userType);
+
+  const dispatch = useDispatch();
+  const handleResetUserType = () => {
+    dispatch(resetUserType());
+  };
+
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogout = async (e) => {
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const customerResponse = await axios.get(
+          "http://localhost:3000/api/customer"
+        );
+        const restaurantResponse = await axios.get(
+          "http://localhost:3000/api/restaurant"
+        );
+
+        if (
+          customerResponse.status === 200 ||
+          restaurantResponse.status === 200
+        ) {
+        }
+      } catch (err) {
+        setError("Not authenticated");
+      }
+    };
+
+    checkAuthentication();
+  }, []);
+
+  const handleCustomerLogout = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
-
     setError("");
-
     try {
       const response = await axios.post(
         "http://localhost:3000/customer/logout",
         {}
       );
       if (response.status === 200) {
+        handleResetUserType();
         navigate("/customerlogin");
       }
     } catch (err) {
-      setError("Invalid credentials");
+      handleResetUserType();
+      setError("Logout failed");
+    }
+  };
+
+  const handleRestaurantLogout = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/restaurant/logout",
+        {}
+      );
+      if (response.status === 200) {
+        handleResetUserType();
+        navigate("/restaurantlogin");
+      }
+    } catch (err) {
+      handleResetUserType();
+      setError("Logout failed");
     }
   };
 
@@ -55,7 +103,7 @@ const Navbar = () => {
             id="navbarContent"
           >
             <div className="d-flex gap-2">
-              {!isAuthenticated ? (
+              {userType === null ? (
                 <>
                   <Link to="/customerlogin">
                     <button
@@ -82,15 +130,41 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
       <div
         className="offcanvas offcanvas-start"
-        tabindex="-1"
+        tabIndex="-1"
         id="offcanvasExample"
         aria-labelledby="offcanvasExampleLabel"
         style={{ width: "300px" }}
       >
         <div className="offcanvas-body justify-content-center align-items-center h-100">
-          {isAuthenticated ? (
+          {userType === null ? (
+            <div>Not Authenticated View {userType}</div>
+          ) : (
+            <div>Authenticated View {userType}</div>
+          )}
+
+          {userType === null ? (
+            <div className="w-100 text-center">
+              <Link to="/customersignup" className=" w-75 d-block mx-auto">
+                <button className="btn btn-dark fw-bolder text-white w-100 p-3 m-2 rounded-2">
+                  Sign Up
+                </button>
+              </Link>
+              <Link to="/customerlogin" className="w-75 d-block mx-auto">
+                <button className="btn btn-outline-dark  fw-bolder w-100 p-3 m-2 rounded-2">
+                  Login
+                </button>
+              </Link>
+              <Link
+                to="/customerlogin"
+                className="text-black text-decoration-none d-block text-center my-3"
+              >
+                Create Your Business Account
+              </Link>
+            </div>
+          ) : (
             <div>
               <div className="d-flex align-items-center">
                 <img
@@ -128,29 +202,16 @@ const Navbar = () => {
               <button
                 className="btn bg-white"
                 type="button"
-                onClick={handleLogout}
+                onClick={
+                  userType === "restaurant"
+                    ? handleRestaurantLogout
+                    : handleCustomerLogout
+                }
               >
-                Sign Out
+                {userType === "restaurant"
+                  ? "Restaurant Sign Out"
+                  : "Customer Sign Out"}
               </button>
-            </div>
-          ) : (
-            <div className="w-100 text-center">
-              <Link to="/customersignup" className=" w-75 d-block mx-auto">
-                <button className="btn btn-dark fw-bolder text-white w-100 p-3 m-2 rounded-2">
-                  Sign Up
-                </button>
-              </Link>
-              <Link to="/customerlogin" className="w-75 d-block mx-auto">
-                <button className="btn btn-outline-dark  fw-bolder w-100 p-3 m-2 rounded-2">
-                  Login
-                </button>
-              </Link>
-              <Link
-                to="/customerlogin"
-                className="text-black text-decoration-none d-block text-center my-3"
-              >
-                Create Your Business Account
-              </Link>
             </div>
           )}
         </div>
