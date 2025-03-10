@@ -136,9 +136,10 @@ exports.getRestaurants = async (req, res) => {
 exports.getRestaurantDishes = async (req, res) => {
   console.log("in get restaurant dishes");
   try {
-    
     const restaurantId = req.params.id;
-    const dishes = await Dish.findAll({ where: { restaurant_id: restaurantId } });
+    const dishes = await Dish.findAll({
+      where: { restaurant_id: restaurantId },
+    });
     res.json(dishes);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -149,6 +150,7 @@ exports.getRestaurantDishes = async (req, res) => {
 exports.addToCart = async (req, res) => {
   try {
     const { dish_id, quantity } = req.body;
+    console.log(req.body);
     const dish = await Dish.findByPk(dish_id);
     if (!dish) {
       return res.status(404).json({ message: "Dish not found." });
@@ -300,12 +302,10 @@ exports.checkoutCart = async (req, res) => {
     });
   } catch (error) {
     console.error("Error during checkout:", error);
-    return res
-      .status(500)
-      .json({
-        message: "An error occurred during checkout.",
-        error: error.message,
-      });
+    return res.status(500).json({
+      message: "An error occurred during checkout.",
+      error: error.message,
+    });
   }
 };
 
