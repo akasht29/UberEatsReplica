@@ -183,6 +183,53 @@ exports.addToCart = async (req, res) => {
   }
 };
 
+exports.updateCart = async (req, res) => {
+  try {
+    const { dish_id, quantity } = req.body;
+
+    const cartItem = await Cart.findOne({
+      where: {
+        customer_id: req.session.customerId,
+        dish_id: dish_id
+      }
+    });
+
+    if (!cartItem) {
+      return res.status(404).json({
+        success: false,
+        message: "Dish not found in the cart."
+      });
+    }
+
+    
+    if (quantity <= 0) {
+      await cartItem.destroy(); 
+      return res.status(200).json({
+        success: true,
+        message: "Dish removed from cart successfully."
+      });
+    }
+
+    
+    cartItem.quantity = quantity;
+    await cartItem.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Cart updated successfully",
+      cartItem
+    });
+  } catch (error) {
+    console.error('Error updating cart item:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating cart item'
+    });
+  }
+};
+
+
+
 
 
 // View all items in the customer's cart
