@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "../utils/axiosConfig";
 
 const RestaurantCard = ({
@@ -11,6 +11,19 @@ const RestaurantCard = ({
   timings,
   onFavorite,
 }) => {
+  const [dishes, setDishes] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/restaurant/dishes/`)
+      .then((response) => {
+        setDishes(response.data);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch dishes:", error);
+      });
+  }, [restaurant_id]);
+
   const handleAddToFavorites = async () => {
     try {
       await axios.post("/customer/favorites", { restaurant_id: restaurant_id });
