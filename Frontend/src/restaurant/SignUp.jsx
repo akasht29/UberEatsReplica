@@ -25,7 +25,7 @@ const Signup = () => {
         }
       );
       if (response.status === 201) {
-        navigate("/login");
+        navigate("/restaurantlogin");
       }
     } catch (err) {
       setError("Error during signup");
@@ -37,7 +37,7 @@ const Signup = () => {
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-md-6 col-lg-4">
-            <h1 className=" text-center mb-4">SignUp</h1>
+            <h1 className=" text-center mb-4">Restaurant SignUp</h1>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="form-label">Email</label>
@@ -97,6 +97,9 @@ const Signup = () => {
               </div>
             </form>
           </div>
+          <p className="mt-3 text-center">
+            Already have an account? <a href="/restaurantlogin">Log in</a>
+          </p>
         </div>{" "}
       </div>
     </div>

@@ -1,29 +1,28 @@
+// components/Cart.js
 import React, { useEffect, useState } from "react";
 import axios from "../utils/axiosConfig";
+import CartCard from "../components/CartCard";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
-  const [customerId, setCustomerId] = useState(null); // Store customerId
+  const [customerId, setCustomerId] = useState(null);
+  const [checkoutStatus, setCheckoutStatus] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        // Fetch the cart data
         const response = await axios.get("http://localhost:3000/customer/cart");
 
-        // Fetch the customerId (assuming you have an endpoint that provides this info)
         const customerResponse = await axios.get(
           "http://localhost:3000/api/customer"
         );
         console.log("customerResponse", customerResponse.data.customerId);
 
-        // Save customerId in the state
         setCustomerId(customerResponse.data.customerId);
 
-        // Map the cart data
         const cartData = Object.keys(response.data.data).map((key) => {
           return {
-            customerId: customerResponse.data.id, // Add customerId to each restaurant item
+            customerId: customerResponse.data.id,
             restaurantId: key,
             ...response.data.data[key],
           };
@@ -31,13 +30,20 @@ const Cart = () => {
 
         setCart(cartData);
         console.log("cartData", cartData);
+
+        cartData.forEach((restaurant) => {
+          console.log(
+            `Dishes from ${restaurant.restaurantName}:`,
+            restaurant.dishes
+          );
+        });
       } catch (error) {
         console.error("Error fetching cart:", error);
       }
     };
 
     fetchCart();
-  }, []);
+  }, [checkoutStatus]);
 
   const handleCheckout = async (restaurantId) => {
     try {
@@ -57,9 +63,28 @@ const Cart = () => {
       );
 
       alert("Checked out successfully!");
+
+      setCheckoutStatus((prevStatus) => !prevStatus);
     } catch (error) {
       console.error("Error checking out:", error);
       alert("Failed to checkout.");
+    }
+  };
+
+  const updateCart = async (dishId, quantity) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:3000/customer/cart/update",
+        {
+          dish_id: dishId,
+          quantity: quantity,
+        }
+      );
+      console.log("Cart updated:", response.data);
+      setCheckoutStatus((prevStatus) => !prevStatus);
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      alert("Failed to update cart.");
     }
   };
 
@@ -67,34 +92,18 @@ const Cart = () => {
     <div className="container mt-4">
       <div className="card">
         <div className="card-body">
-          {cart.map((restaurant) => (
-            <div key={restaurant.restaurantId} className="mb-4">
-              <h4 className="card-title">{restaurant.restaurantName}</h4>
-              <ul className="list-group mt-3">
-                {restaurant.dishes.map((item) => (
-                  <li
-                    key={item.dishName}
-                    className="list-group-item d-flex justify-content-between"
-                  >
-                    <span>
-                      {item.dishName} (x{item.quantity})
-                    </span>
-                    <span>${item.totalPrice.toFixed(2)}</span>
-                  </li>
-                ))}
-              </ul>
-              <h5 className="mt-3">
-                Total for {restaurant.restaurantName}: $
-                {restaurant.totalPrice.toFixed(2)}
-              </h5>
-              <button
-                onClick={() => handleCheckout(restaurant.restaurantId)} // Use restaurantId to checkout
-                className="btn btn-primary mt-3"
-              >
-                Checkout
-              </button>
-            </div>
-          ))}
+          {cart.length > 0 ? (
+            cart.map((restaurant) => (
+              <CartCard
+                key={restaurant.restaurantId}
+                restaurant={restaurant}
+                handleCheckout={handleCheckout}
+                updateCart={updateCart}
+              />
+            ))
+          ) : (
+            <p>Your cart is empty.</p>
+          )}
         </div>
       </div>
     </div>

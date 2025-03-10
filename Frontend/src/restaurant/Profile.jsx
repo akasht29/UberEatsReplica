@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
@@ -53,7 +52,6 @@ const Profile = () => {
     }));
   };
 
-
   const handleProfileChange = async (e) => {
     e.preventDefault();
     try {
@@ -65,6 +63,7 @@ const Profile = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
+      console.log("profile", profile);
       if (response.status === 200) {
         fetchProfile();
         setEdit(false);
@@ -106,9 +105,10 @@ const Profile = () => {
         {!edit ? (
           <div className="text-center">
             <img
-              src={profile.images
+              src={
+                profile.images
                   ? `http://localhost:3000${profile.images}`
-                  : "/profileInfo.jpg"
+                  : "/restaurant.jpg"
               }
               alt="Profile"
               className="rounded-circle mb-3"
@@ -190,7 +190,6 @@ const Profile = () => {
             </button>
           </form>
         )}
-
       </div>
       <div className="menu-section w-75">
         <Menu />

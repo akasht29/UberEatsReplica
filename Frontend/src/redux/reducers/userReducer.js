@@ -1,8 +1,9 @@
-// reducers/userReducer.js
 import { SET_USER_TYPE, RESET_USER_TYPE } from "../constants/userConstants";
 
+const persistedUserType = localStorage.getItem("userType");
+
 const initialState = {
-  userType: null,
+  userType: persistedUserType ? persistedUserType : null,
 };
 
 export const userReducer = (state = initialState, action) => {

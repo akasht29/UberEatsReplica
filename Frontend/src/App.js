@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserType, resetUserType } from "./redux/actions/userActions";
+
 import CustomerLogin from "./customer/Login";
 import CustomerSignUp from "./customer/SignUp";
 import CustomerProfile from "./customer/Profile";
@@ -16,6 +19,17 @@ import CreateDish from "./components/CreateDish";
 import UpdateDish from "./components/UpdateDish";
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const userType = localStorage.getItem("userType");
+
+    if (userType) {
+      dispatch(setUserType(userType));
+    } else {
+      dispatch(resetUserType());
+    }
+  }, [dispatch]);
   return (
     <>
       <Router>

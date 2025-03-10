@@ -8,47 +8,75 @@ const RestaurantCard = ({
   description,
   contact_info,
   images,
-  timings,
-  onFavorite,
+  refetchFavorites,
 }) => {
   const [dishes, setDishes] = useState([]);
   const [quantity, setQuantity] = useState({});
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     axios
       .get(`http://localhost:3000/customer/restaurant/dishes/${restaurant_id}`)
       .then((response) => {
-        console.log("dishes", response.data);
         setDishes(response.data);
       })
       .catch((error) => {
         console.error("Error fetching dishes:", error);
       });
+
+    axios
+      .get("http://localhost:3000/customer/favorites")
+      .then((response) => {
+        const favorites = response.data;
+        const isFav = favorites.some(
+          (favorite) => favorite.restaurant_id === restaurant_id
+        );
+        setIsFavorite(isFav);
+      })
+      .catch((error) => {
+        console.error("Error checking favorites:", error);
+      });
   }, [restaurant_id]);
 
   const handleAddToCart = async (dish_id) => {
-    const qty = quantity[dish_id] || 1;
-    console.log("dishId:", dish_id);
-    console.log("qty:", qty);
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/customer/cart/add",
-        {
-          dish_id: dish_id,
+    const qty = quantity[dish_id] || 0;
+    if (qty > 0) {
+      try {
+        await axios.post("http://localhost:3000/customer/cart/add", {
+          dish_id,
           quantity: qty,
-        }
-      );
-      alert("Dish added to cart successfully!");
-    } catch (error) {
-      console.error("Error adding dish to cart:", error);
-      alert("Failed to add dish to cart.");
+        });
+      } catch (error) {
+        console.error("Error adding dish to cart:", error);
+      }
     }
   };
 
   const handleQuantityChange = (e, dishId) => {
     const value = Math.max(1, parseInt(e.target.value) || 1);
     setQuantity((prev) => ({ ...prev, [dishId]: value }));
+  };
+
+  const handleToggleFavorite = async () => {
+    try {
+      if (isFavorite) {
+        // Remove from favorites
+        await axios.delete("http://localhost:3000/customer/favorites", {
+          data: { restaurant_id },
+        });
+        setIsFavorite(false);
+      } else {
+        // Add to favorites
+        await axios.post("http://localhost:3000/customer/favorites", {
+          restaurant_id,
+        });
+        setIsFavorite(true);
+      }
+
+      refetchFavorites();
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
   };
 
   return (
@@ -65,13 +93,20 @@ const RestaurantCard = ({
         <div className="col-md-8">
           <div className="card-body">
             <h5 className="card-title">{restaurant_name}</h5>
-            <p className="card-text">{description}</p>
+            <p className="card-text">Description: {description}</p>
 
             <div className="d-flex justify-content-between mb-2">
               <p className="card-text">Location: {location}</p>
               <p className="card-text">Contact: {contact_info}</p>
-              <p className="card-text">Hours: {timings}</p>
             </div>
+            <button
+              className={`btn ${
+                isFavorite ? "btn-danger" : "btn-primary"
+              } ml-2`}
+              onClick={handleToggleFavorite}
+            >
+              {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+            </button>
 
             <h6 className="mt-4">Dishes:</h6>
             <ul>
@@ -82,13 +117,13 @@ const RestaurantCard = ({
                     <div className="d-flex align-items-center mt-2">
                       <input
                         type="number"
-                        value={quantity[dish.dish_id] || 1}
+                        value={quantity[dish.dish_id] || 0}
                         onChange={(e) => handleQuantityChange(e, dish.dish_id)}
-                        min="1"
+                        min="0"
                         style={{ width: "50px" }}
                       />
                       <button
-                        className="btn btn-primary ml-2"
+                        className="btn btn-dark ml-2"
                         onClick={() => handleAddToCart(dish.dish_id)}
                       >
                         Add to Cart
@@ -106,4 +141,5 @@ const RestaurantCard = ({
     </div>
   );
 };
+
 export default RestaurantCard;

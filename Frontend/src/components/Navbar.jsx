@@ -1,37 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "../utils/axiosConfig";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { resetUserType } from "../redux/actions/userActions";
+import axios from "../utils/axiosConfig";
 
 const Navbar = () => {
   const userType = useSelector((state) => state.user.userType);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   const handleResetUserType = () => {
     dispatch(resetUserType());
   };
 
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      try {
-        await axios.get("http://localhost:3000/api/customer");
-        await axios.get("http://localhost:3000/api/restaurant");
-      } catch (err) {
-        setError("Not authenticated");
-      }
-    };
-
-    checkAuthentication();
-  }, []);
-
   const handleLogout = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
       const response = await axios.post(
         userType === "restaurant"
@@ -103,7 +89,6 @@ const Navbar = () => {
         <div className="offcanvas-body justify-content-center align-items-center h-100">
           {userType === null ? (
             <div>
-              <div>Not Authenticated View</div>
               <div className="w-100 text-center">
                 <Link to="/customersignup" className="w-75 d-block mx-auto">
                   <button className="btn btn-dark fw-bolder text-white w-100 p-3 m-2 rounded-2">
@@ -116,10 +101,16 @@ const Navbar = () => {
                   </button>
                 </Link>
                 <Link
-                  to="/customerlogin"
+                  to="/restaurantsignup"
                   className="text-black text-decoration-none d-block text-center my-3"
                 >
-                  Create Your Business Account
+                  Restaurant Signup
+                </Link>
+                <Link
+                  to="/restaurantlogin"
+                  className="text-black text-decoration-none d-block text-center my-3"
+                >
+                  Restaurant Login
                 </Link>
               </div>
             </div>
@@ -181,7 +172,7 @@ const Navbar = () => {
                 </>
               )}
               <button
-                className="btn bg-white mt-3"
+                className="btn btn-danger text-white mt-3"
                 type="button"
                 onClick={handleLogout}
               >

@@ -5,32 +5,30 @@ import axios from "../utils/axiosConfig";
 const Favorites = () => {
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
 
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const restaurantResponse = await axios.get(
-          "http://localhost:3000/customer/restaurants",
-          {
-            withCredentials: true,
-          }
-        );
-        const favoritesResponse = await axios.get("/customer/favorites", {
+  const fetchFavorites = async () => {
+    try {
+      const restaurantResponse = await axios.get(
+        "http://localhost:3000/customer/restaurants",
+        {
           withCredentials: true,
-        });
-        console.log("resturants", restaurantResponse.data);
-        setFavoriteRestaurants(favoritesResponse.data);
-        console.log("favorites", favoritesResponse.data);
-        const filteredFavorites = restaurantResponse.data.filter((restaurant) =>
-          favoritesResponse.data.some(
-            (fav) => fav.restaurant_id === restaurant.restaurant_id
-          )
-        );
-        setFavoriteRestaurants(filteredFavorites);
-      } catch (error) {
-        console.error("Error fetching favorites:", error);
-      }
-    };
+        }
+      );
+      const favoritesResponse = await axios.get("/customer/favorites", {
+        withCredentials: true,
+      });
 
+      const filteredFavorites = restaurantResponse.data.filter((restaurant) =>
+        favoritesResponse.data.some(
+          (fav) => fav.restaurant_id === restaurant.restaurant_id
+        )
+      );
+      setFavoriteRestaurants(filteredFavorites);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchFavorites();
   }, []);
 
@@ -42,7 +40,10 @@ const Favorites = () => {
         {favoriteRestaurants.length > 0 ? (
           favoriteRestaurants.map((restaurant) => (
             <div className="col-md-4" key={restaurant.id}>
-              <RestaurantCard {...restaurant} />
+              <RestaurantCard
+                {...restaurant}
+                refetchFavorites={fetchFavorites}
+              />
             </div>
           ))
         ) : (

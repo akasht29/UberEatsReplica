@@ -40,13 +40,10 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <div className="card" style={{ width: "100%", maxWidth: "400px" }}>
-        <div className="card-body">
-          <h2 className="text-center mb-4">Login</h2>
+    <div className="container d-flex justify-content-center align-items-center">
+      <div style={{ width: "100%", maxWidth: "400px" }}>
+        <div>
+          <h1 className="text-center mb-4">Customer Login</h1>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -81,15 +78,12 @@ const Login = () => {
 
             {error && <div className="alert alert-danger">{error}</div>}
 
-            <button type="submit" className="btn btn-primary w-100">
+            <button type="submit" className="btn btn-dark w-100">
               Log In
             </button>
           </form>
           <p className="mt-3 text-center">
-            Restaurant <a href="/restaurantlogin">Restaurant Login</a>
-          </p>
-          <p className="mt-3 text-center">
-            Don't have an account? <a href="/signup">Sign up</a>
+            Don't have an account? <a href="/customersignup">Sign up</a>
           </p>
         </div>
       </div>

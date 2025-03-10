@@ -137,7 +137,7 @@ const Profile = () => {
               src={
                 profileInfo.profile_picture
                   ? `http://localhost:3000${profileInfo.profile_picture}`
-                  : "/profileInfo.jpg"
+                  : "/profile.jpg"
               }
               alt="Profile"
               className="rounded-circle mb-3"
@@ -179,6 +179,9 @@ const Profile = () => {
         ) : (
           <form onSubmit={handleProfileChange}>
             <div className="mb-3">
+              <label htmlFor="name" className="form-label">
+                Name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -189,16 +192,9 @@ const Profile = () => {
               />
             </div>
             <div className="mb-3">
-              <input
-                type="email"
-                name="email"
-                value={profileInfo.email}
-                onChange={handleChange}
-                className="form-control"
-                placeholder="Email"
-              />
-            </div>
-            <div className="mb-3">
+              <label htmlFor="country" className="form-label">
+                Country
+              </label>
               <select
                 value={profileInfo.country}
                 onChange={handleChange}
@@ -214,6 +210,9 @@ const Profile = () => {
               </select>
             </div>
             <div className="mb-3">
+              <label htmlFor="state" className="form-label">
+                State
+              </label>
               <input
                 type="text"
                 value={profileInfo.state}

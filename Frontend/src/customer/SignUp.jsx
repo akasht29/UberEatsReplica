@@ -24,7 +24,7 @@ const Signup = () => {
         }
       );
       if (response.status === 201) {
-        navigate("/login");
+        navigate("/customerlogin");
       }
     } catch (err) {
       setError("Error during signup");
@@ -32,13 +32,10 @@ const Signup = () => {
   };
 
   return (
-    <div
-      className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <div className="card" style={{ width: "100%", maxWidth: "400px" }}>
-        <div className="card-body">
-          <h2 className="text-center mb-4">Sign Up</h2>
+    <div className="container d-flex justify-content-center align-items-center">
+      <div style={{ width: "100%", maxWidth: "400px" }}>
+        <div>
+          <h1 className="text-center mb-4">Customer Signup</h1>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -88,13 +85,13 @@ const Signup = () => {
 
             {error && <div className="alert alert-danger">{error}</div>}
 
-            <button type="submit" className="btn btn-primary w-100">
+            <button type="submit" className="btn btn-dark w-100">
               Sign Up
             </button>
           </form>
 
           <p className="mt-3 text-center">
-            Already have an account? <a href="/login">Log in</a>
+            Already have an account? <a href="/customerlogin">Log in</a>
           </p>
         </div>
       </div>

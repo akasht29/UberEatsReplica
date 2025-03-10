@@ -196,47 +196,41 @@ exports.updateCart = async (req, res) => {
     const cartItem = await Cart.findOne({
       where: {
         customer_id: req.session.customerId,
-        dish_id: dish_id
-      }
+        dish_id: dish_id,
+      },
     });
 
     if (!cartItem) {
       return res.status(404).json({
         success: false,
-        message: "Dish not found in the cart."
+        message: "Dish not found in the cart.",
       });
     }
 
-    
     if (quantity <= 0) {
-      await cartItem.destroy(); 
+      await cartItem.destroy();
       return res.status(200).json({
         success: true,
-        message: "Dish removed from cart successfully."
+        message: "Dish removed from cart successfully.",
       });
     }
 
-    
     cartItem.quantity = quantity;
     await cartItem.save();
 
     res.status(200).json({
       success: true,
       message: "Cart updated successfully",
-      cartItem
+      cartItem,
     });
   } catch (error) {
-    console.error('Error updating cart item:', error);
+    console.error("Error updating cart item:", error);
     res.status(500).json({
       success: false,
-      message: 'Error updating cart item'
+      message: "Error updating cart item",
     });
   }
 };
-
-
-
-
 
 // View all items in the customer's cart
 exports.viewCart = async (req, res) => {
@@ -260,7 +254,7 @@ exports.viewCart = async (req, res) => {
     const groupedByRestaurant = cartItems.reduce((acc, cartItem) => {
       const { restaurant_id, restaurant_name: restaurantName } =
         cartItem.Restaurant;
-      const { name: dishName, price } = cartItem.Dish;
+      const { dish_id, name: dishName, price } = cartItem.Dish;
       const quantity = cartItem.quantity;
 
       if (!acc[restaurant_id]) {
@@ -272,6 +266,7 @@ exports.viewCart = async (req, res) => {
       }
 
       acc[restaurant_id].dishes.push({
+        dish_id, // Include dish_id here
         dishName,
         price,
         quantity,
@@ -383,6 +378,32 @@ exports.addToFavorites = async (req, res) => {
     });
 
     res.json({ message: "Added to favorites" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.deleteFavorites = async (req, res) => {
+  try {
+    const { restaurant_id } = req.body;
+    const favorite = await Favorite.findOne({
+      where: {
+        customer_id: req.session.customerId,
+        restaurant_id,
+      },
+    });
+
+    if (!favorite) {
+      return res.status(404).json({ error: "Favorite not found" });
+    }
+    await Favorite.destroy({
+      where: {
+        customer_id: req.session.customerId,
+        restaurant_id,
+      },
+    });
+
+    res.json({ message: "Removed from favorites" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

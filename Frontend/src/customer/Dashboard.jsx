@@ -12,15 +12,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        console.log("Making request to fetch restaurants...");
         const response = await axios.get(
           "http://localhost:3000/customer/restaurants",
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
-
-        console.log("Response:", response.data);
         if (response.status === 200) {
           setRestaurants(response.data);
         }
