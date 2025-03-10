@@ -1,35 +1,54 @@
 'use strict';
-
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Orders', {
-      order_id: { 
-        type: Sequelize.INTEGER, 
-        autoIncrement: true, 
-        primaryKey: true 
-      },
-      customer_id: { 
-        type: Sequelize.INTEGER, 
+      id: {
         allowNull: false,
-        references: { model: 'Customers', key: 'customer_id' },
-        onDelete: 'CASCADE'
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
-      restaurant_id: { 
-        type: Sequelize.INTEGER, 
+      customer_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'Restaurants', key: 'restaurant_id' },
-        onDelete: 'CASCADE'
+        references: {
+          model: 'Customers', // Make sure the customers table exists
+          key: 'customer_id',
+        },
+        onDelete: 'CASCADE', // Optional: if a customer is deleted, delete their orders
       },
-      status: { 
-        type: Sequelize.ENUM('New', 'Preparing', 'On the Way', 'Pick-up Ready', 'Delivered', 'Picked Up', 'Cancelled'),
-        defaultValue: 'New'
+      restaurant_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Restaurants', // Make sure the customers table exists
+          key: 'restaurant_id',
+        },
+        onDelete: 'CASCADE', // Optional: if a customer is deleted, delete their orders
       },
-      createdAt: { type: Sequelize.DATE, allowNull: false },
-      updatedAt: { type: Sequelize.DATE, allowNull: false }
+      total_price: {
+        type: Sequelize.FLOAT,
+        allowNull: false,
+        defaultValue: 0.0,
+      },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'Pending', // Default status when order is created
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
     });
   },
-
-  async down(queryInterface, Sequelize) {
+  down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Orders');
-  }
+  },
 };
