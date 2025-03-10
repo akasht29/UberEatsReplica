@@ -66,7 +66,7 @@ const Menu = () => {
                   <button
                     className="btn btn-warning"
                     onClick={() =>
-                      navigate("/updatedish", { state: { id: dish.dish_id } })
+                      navigate("/updateDish", { state: { id: dish.dish_id } })
                     }
                   >
                     Update

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import RestaurantCard from "../components/ResturantCard";
+import RestaurantCard from "../components/RestaurantCard";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
 

@@ -24,7 +24,7 @@ const Login = () => {
       );
       console.log(response);
       if (response.status === 200) {
-        navigate("/resturantprofile");
+        navigate("/restaurantprofile");
       }
     } catch (err) {
       setError("Invalid credentials");

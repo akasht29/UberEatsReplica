@@ -15,9 +15,11 @@ router.get("/profile", restaurantAuth, restaurantController.getProfile);
 router.put("/profile", restaurantAuth, restaurantController.updateProfile);
 router.put("/profile/picture", restaurantAuth, upload.single("file"), restaurantController.updateProfilePicture);
 
-router.post("/dish", restaurantAuth, restaurantController.addDish);
+router.post("/dish", restaurantAuth, upload.single("file"), restaurantController.addDish);
 router.get("/dish", restaurantAuth, restaurantController.getDishes);
 router.delete("/dish/:id", restaurantAuth, restaurantController.deleteDish);
+router.put("/dish/:id", restaurantAuth, upload.single("file"), restaurantController.updateDish);
+router.get("/dish/:id", restaurantAuth, restaurantController.getDishById);
 
 router.get("/orders", restaurantAuth, restaurantController.viewOrders);
 router.post("/order/status/:id", restaurantAuth, restaurantController.updateOrderStatus);

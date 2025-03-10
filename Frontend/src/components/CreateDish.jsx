@@ -8,41 +8,47 @@ const CreateDish = () => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Appetizer");
+  const [imageFile, setImageFile] = useState(null); // New state for image
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate(); 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error message
-    setSuccessMessage(""); // Reset success message
+    setError(""); 
+    setSuccessMessage(""); 
 
-    const dishData = {
-      name,
-      ingredients,
-      price: parseFloat(price), // Ensure price is a number
-      description,
-      category,
-    };
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("ingredients", ingredients);
+    formData.append("price", parseFloat(price));
+    formData.append("description", description);
+    formData.append("category", category);
+
+    // Append image if selected
+    if (imageFile) {
+      formData.append("file", imageFile);
+    }
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/restaurant/dish", // Adjust the endpoint accordingly
-        dishData,
+        "http://localhost:3000/restaurant/dish", 
+        formData,
         {
-          withCredentials: true, // Include credentials (cookies, auth headers)
-        },
-        {headers: {
-            'Content-Type': 'application/json',
-          }}
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        }
       );
+
       if (response.status === 201) {
         setSuccessMessage("Dish created successfully!");
-        setName(""); // Clear the form
+        setName("");
         setIngredients("");
         setPrice("");
         setDescription("");
-        setCategory("Appetizer"); // Reset category to default
-        navigate("/resturantprofile");
+        setCategory("Appetizer");
+        setImageFile(null); // Reset image
+        navigate("/restaurantprofile");
       }
     } catch (err) {
       setError("Failed to create dish. Please try again.");
@@ -50,19 +56,15 @@ const CreateDish = () => {
   };
 
   return (
-    <div
-      className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
+    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
       <div className="card" style={{ width: "100%", maxWidth: "400px" }}>
         <div className="card-body">
           <h2 className="text-center mb-4">Create a New Dish</h2>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
+            {/* Name */}
             <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Dish Name
-              </label>
+              <label htmlFor="name" className="form-label">Dish Name</label>
               <input
                 type="text"
                 className="form-control"
@@ -74,10 +76,9 @@ const CreateDish = () => {
               />
             </div>
 
+            {/* Ingredients */}
             <div className="mb-3">
-              <label htmlFor="ingredients" className="form-label">
-                Ingredients
-              </label>
+              <label htmlFor="ingredients" className="form-label">Ingredients</label>
               <textarea
                 className="form-control"
                 id="ingredients"
@@ -88,10 +89,9 @@ const CreateDish = () => {
               />
             </div>
 
+            {/* Price */}
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">
-                Price
-              </label>
+              <label htmlFor="price" className="form-label">Price</label>
               <input
                 type="number"
                 className="form-control"
@@ -103,10 +103,9 @@ const CreateDish = () => {
               />
             </div>
 
+            {/* Description */}
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">
-                Description
-              </label>
+              <label htmlFor="description" className="form-label">Description</label>
               <textarea
                 className="form-control"
                 id="description"
@@ -117,10 +116,9 @@ const CreateDish = () => {
               />
             </div>
 
+            {/* Category */}
             <div className="mb-3">
-              <label htmlFor="category" className="form-label">
-                Category
-              </label>
+              <label htmlFor="category" className="form-label">Category</label>
               <select
                 id="category"
                 className="form-select"
@@ -134,6 +132,18 @@ const CreateDish = () => {
                 <option value="Dessert">Dessert</option>
                 <option value="Beverage">Beverage</option>
               </select>
+            </div>
+
+            {/* Image Upload */}
+            <div className="mb-3">
+              <label htmlFor="image" className="form-label">Upload Image</label>
+              <input
+                type="file"
+                className="form-control"
+                id="image"
+                accept="image/*"
+                onChange={(e) => setImageFile(e.target.files[0])}
+              />
             </div>
 
             {error && <div className="alert alert-danger">{error}</div>}

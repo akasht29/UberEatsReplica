@@ -73,8 +73,8 @@ exports.getProfile = async (req, res) => {
 // Update Profile
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, country, state, location, description, contact_info, timings } = req.body;
-        await Restaurant.update({ name, country, state, location, description, contact_info, timings }, { where: { restaurant_id: req.session.restaurantId } });
+        const { name, location, description, contact_info, timings } = req.body;
+        await Restaurant.update({ name, location, description, contact_info, timings }, { where: { restaurant_id: req.session.restaurantId } });
 
         res.json({ message: "Profile updated successfully" });
     } catch (error) {
@@ -125,6 +125,8 @@ exports.addDish = async (req, res) => {
             image: imagePath
         });
 
+        
+
         res.status(201).json({ message: 'Dish added successfully', dish });
     } catch (error) {
         console.error(error);
@@ -138,6 +140,46 @@ exports.getDishes = async (req, res) => {
             where: { restaurant_id: req.session.restaurantId }
         });
         res.json(dishes);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getDishById = async (req, res) => {
+    try {
+        const dish = await Dish.findByPk(req.params.id);
+        if (!dish) {
+            return res.status(404).json({ message: "Dish not found" });
+        }
+        res.json(dish);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.updateDish = async (req, res) => {
+    try {
+        console.log(req.body);
+        const { name, ingredients, price, description, category } = req.body;
+        let imagePath = null;
+        if (req.file) {
+            imagePath = `/uploads/${req.file.filename}`;
+        }
+        console.log(req.body);
+        console.log(req.params.id);
+
+        await Dish.update({
+            name,
+            ingredients,
+            price,
+            description,
+            category,
+            image: imagePath
+        }, {
+            where: { dish_id: req.params.id }
+        });
+
+        res.json({ message: 'Dish updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -217,24 +259,3 @@ exports.getCustomerByOrderId = async (req, res) => {
 
 
 
-// exports.editDish = async (req, res) => {
-//     try {
-//         const { name, ingredients, price, description, category } = req.body;
-//         const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
-
-//         await Dish.update({
-//             name,
-//             ingredients,
-//             price,
-//             description,
-//             category,
-//             image: imagePath
-//         }, {
-//             where: { dish_id: req.params.dishId }
-//         });
-
-//         res.json({ message: 'Dish updated successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
