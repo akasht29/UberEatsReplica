@@ -8,7 +8,6 @@ const Menu = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch dishes from API
     axios
       .get("http://localhost:3000/restaurant/dish")
       .then((response) => {
@@ -29,11 +28,10 @@ const Menu = () => {
       axios
         .delete(`http://localhost:3000/restaurant/dish/${dishId}`)
         .then(() => {
-          // After deletion, fetch the updated dishes list
           axios
             .get("http://localhost:3000/restaurant/dish")
             .then((response) => {
-              setDishes(response.data); // Update the state with the new dishes list
+              setDishes(response.data);
               alert("Dish deleted successfully!");
             })
             .catch((error) => {
