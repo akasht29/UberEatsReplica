@@ -133,6 +133,18 @@ exports.getRestaurants = async (req, res) => {
   }
 };
 
+exports.getRestaurantDishes = async (req, res) => {
+  console.log("in get restaurant dishes");
+  try {
+    
+    const restaurantId = req.params.id;
+    const dishes = await Dish.findAll({ where: { restaurant_id: restaurantId } });
+    res.json(dishes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Add a dish to the cart
 exports.addToCart = async (req, res) => {
   try {
