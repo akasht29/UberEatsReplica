@@ -73,8 +73,8 @@ exports.getProfile = async (req, res) => {
 // Update Profile
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, country, state, location, description, contact_info, timings } = req.body;
-        await Restaurant.update({ name, country, state, location, description, contact_info, timings }, { where: { restaurant_id: req.session.restaurantId } });
+        const { name, location, description, contact_info, timings } = req.body;
+        await Restaurant.update({ name, location, description, contact_info, timings }, { where: { restaurant_id: req.session.restaurantId } });
 
         res.json({ message: "Profile updated successfully" });
     } catch (error) {
@@ -115,15 +115,17 @@ exports.addDish = async (req, res) => {
         const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
 
         const dish = await Dish.create({
-            restaurant_id : req.session.restaurantId,
+            restaurant_id: req.session.restaurantId,
             name,
             ingredients,
             price,
             description,
             category,
-            
+
             image: imagePath
         });
+
+        
 
         res.status(201).json({ message: 'Dish added successfully', dish });
     } catch (error) {
@@ -143,81 +145,117 @@ exports.getDishes = async (req, res) => {
     }
 };
 
+exports.getDishById = async (req, res) => {
+    try {
+        const dish = await Dish.findByPk(req.params.id);
+        if (!dish) {
+            return res.status(404).json({ message: "Dish not found" });
+        }
+        res.json(dish);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
-exports.viewOrders = async(req, res) => {
-    const restaurantId = req.session.restaurantId; 
-  
+exports.updateDish = async (req, res) => {
+    try {
+        console.log(req.body);
+        const { name, ingredients, price, description, category } = req.body;
+        let imagePath = null;
+        if (req.file) {
+            imagePath = `/uploads/${req.file.filename}`;
+        }
+        console.log(req.body);
+        console.log(req.params.id);
+
+        await Dish.update({
+            name,
+            ingredients,
+            price,
+            description,
+            category,
+            image: imagePath
+        }, {
+            where: { dish_id: req.params.id }
+        });
+
+        res.json({ message: 'Dish updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.deleteDish = async (req, res) => {
+    try {
+        
+        const dishId = req.params.id;
+        console.log("in delete dishId", dishId);
+        const dish = await Dish.findOne({ where: { dish_id: dishId } });
+        if (!dish) {
+            return res.status(404).json({ message: "Dish not found" });
+        }
+        
+        await Dish.destroy({ where: { dish_id: dishId } });
+        res.json({ message: "Dish deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+exports.viewOrders = async (req, res) => {
+    const restaurantId = req.session.restaurantId;
+
     const orders = await Order.findAll({
-      where: { restaurant_id: restaurantId },
-      include: [{ model: OrderItem, include: [Dish] }]
+        where: { restaurant_id: restaurantId },
+        include: [{ model: OrderItem, include: [Dish] }]
     });
-  
+
     return res.status(200).json({ orders });
-  }
-  
-  exports.updateOrderStatus = async(req, res) => {
+}
+
+exports.updateOrderStatus = async (req, res) => {
     const orderId = req.params.id;
     const { status } = req.body;
-  
+
     const order = await Order.findByPk(orderId);
-  
+
     if (!order) {
-      return res.status(404).json({ message: "Order not found." });
+        return res.status(404).json({ message: "Order not found." });
     }
-  
+
     order.status = status;
     await order.save();
-  
+
     return res.status(200).json({ message: "Order status updated." });
-  }
-
-
-
-// Controller to get customer details for a given order ID
-exports.getCustomerByOrderId = async(req, res) => {
-  try {
-    const { id: orderId } = req.params;  
-    const restaurantId = req.session.restaurantId;  
-
-    
-    const order = await Order.findOne({
-      where: { id: orderId, restaurant_id: restaurantId },  
-      include: { model: Customer, attributes: ['customer_id', 'name', 'email'] }
-    });
-
-    if (!order) {
-      return res.status(404).json({ message: "Order not found or does not belong to your restaurant." });
-    }
-
-    
-    return res.status(200).json({ customer: order.Customer });
-
-  } catch (error) {
-    console.error('Error fetching customer details:', error);
-    return res.status(500).json({ message: "An error occurred while fetching customer details." });
-  }
 }
 
 
 
-// exports.editDish = async (req, res) => {
-//     try {
-//         const { name, ingredients, price, description, category } = req.body;
-//         const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+// Controller to get customer details for a given order ID
+exports.getCustomerByOrderId = async (req, res) => {
+    try {
+        const { id: orderId } = req.params;
+        const restaurantId = req.session.restaurantId;
 
-//         await Dish.update({        
-//             name,
-//             ingredients,
-//             price,
-//             description,
-//             category,
-//             image: imagePath
-//         }, {
-//             where: { dish_id: req.params.dishId }
-//         });
 
-//         res.json({ message: 'Dish updated successfully' });
-//     } catch (error) {    
-//         res.status(500).json({ error: error.message });
-//     }    
-// };
+        const order = await Order.findOne({
+            where: { id: orderId, restaurant_id: restaurantId },
+            include: { model: Customer, attributes: ['customer_id', 'name', 'email'] }
+        });
+
+        if (!order) {
+            return res.status(404).json({ message: "Order not found or does not belong to your restaurant." });
+        }
+
+
+        return res.status(200).json({ customer: order.Customer });
+
+    } catch (error) {
+        console.error('Error fetching customer details:', error);
+        return res.status(500).json({ message: "An error occurred while fetching customer details." });
+    }
+}
+
+
+

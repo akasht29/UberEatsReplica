@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
@@ -52,6 +53,7 @@ const Profile = () => {
     }));
   };
 
+
   const handleProfileChange = async (e) => {
     e.preventDefault();
     try {
@@ -104,8 +106,7 @@ const Profile = () => {
         {!edit ? (
           <div className="text-center">
             <img
-              src={
-                profile.images
+              src={profile.images
                   ? `http://localhost:3000${profile.images}`
                   : "/profileInfo.jpg"
               }
@@ -124,6 +125,7 @@ const Profile = () => {
             >
               Edit Profile
             </button>
+
             <button
               className="btn btn-secondary mt-3"
               onClick={() => setShowFileInput(!showFileInput)}
@@ -188,6 +190,7 @@ const Profile = () => {
             </button>
           </form>
         )}
+
       </div>
       <div className="menu-section w-75">
         <Menu />

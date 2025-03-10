@@ -30,10 +30,6 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  console.log("Session Debug:", req.session); // Log session details
-  next();
-});
 app.use("/uploads", express.static("uploads"));
 app.use("/customer", customerRoutes);
 app.use("/restaurant", restaurantRoutes);

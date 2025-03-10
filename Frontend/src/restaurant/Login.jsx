@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 import { useDispatch } from "react-redux";
 import { setUserType } from "../redux/actions/userActions";
 
@@ -9,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
 
   const dispatch = useDispatch();
   const handleSetUserType = (type) => {
@@ -31,6 +33,7 @@ const Login = () => {
       );
       console.log(response);
       if (response.status === 200) {
+
         handleSetUserType("restaurant");
         navigate("/restaurantprofile");
       }

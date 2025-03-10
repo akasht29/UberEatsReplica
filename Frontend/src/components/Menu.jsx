@@ -1,46 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../utils/axiosConfig";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const dishList = [
-  {
-    id: 1,
-    name: "Margherita Pizza",
-    ingredients: "Tomato sauce, mozzarella, fresh basil, olive oil",
-    image: "/images/margherita.jpg",
-    price: "12.99",
-    description:
-      "A classic Italian pizza topped with fresh basil and mozzarella.",
-    category: "Main Course",
-  },
-  {
-    id: 2,
-    name: "Caesar Salad",
-    ingredients: "Romaine lettuce, croutons, parmesan cheese, Caesar dressing",
-    image: "/images/caesar-salad.jpg",
-    price: "9.99",
-    description:
-      "Crisp romaine lettuce tossed with parmesan, croutons, and creamy Caesar dressing.",
-    category: "Salad",
-  },
-  {
-    id: 3,
-    name: "Spaghetti Carbonara",
-    ingredients: "Spaghetti, eggs, pancetta, parmesan cheese, black pepper",
-    image: "/images/carbonara.jpg",
-    price: "14.50",
-    description:
-      "A rich and creamy pasta dish made with eggs, cheese, pancetta, and pepper.",
-    category: "Main Course",
-  },
-];
-
-const Menu = ({ dishes }) => {
+const Menu = () => {
+  const [dishes, setDishes] = useState([]);
   const navigate = useNavigate();
 
-  //   useEffect(() => {
-  //     console.log("Dish list updated:", dishes);
-  //   }, [dishes]);
+  useEffect(() => {
+    // Fetch dishes from API
+    axios.get("http://localhost:3000/restaurant/dish")
+      .then((response) => {
+        setDishes(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching dishes:", error);
+      });
+  }, []);
+
+  const handleDelete = (dishId) => {
+    console.log("Deleting dish with ID:", dishId);
+    
+    const confirmDelete = window.confirm("Are you sure you want to delete this dish?");
+    if (confirmDelete) {
+      axios
+        .delete(`http://localhost:3000/restaurant/dish/${dishId}`)
+        .then(() => {
+          // After deletion, fetch the updated dishes list
+          axios.get('http://localhost:3000/restaurant/dish')
+            .then((response) => {
+              setDishes(response.data); // Update the state with the new dishes list
+              alert("Dish deleted successfully!");
+            })
+            .catch((error) => {
+              console.error("Error fetching dishes:", error);
+              alert("Failed to fetch updated dishes list.");
+            });
+        })
+        .catch((error) => {
+          console.error("Error deleting dish:", error);
+          alert("Failed to delete the dish. Please try again.");
+        });
+    }
+  };
+  
 
   return (
     <div className="container mt-4">
@@ -48,13 +51,13 @@ const Menu = ({ dishes }) => {
       <h2 className="text-center">Dish List</h2>
 
       <div className="row">
-        {dishList.map((dish) => (
-          <div className="col-md-4" key={dish.id}>
+        {dishes.map((dish) => (
+          <div className="col-md-4" key={dish.dish_id}>
             <div className="card mb-4 shadow-sm">
               <div className="card-body">
                 <h5 className="card-title">{dish.name}</h5>
                 <p className="card-text">
-                  <strong>ID:</strong> {dish.id}
+                  <strong>ID:</strong> {dish.dish_id}
                 </p>
                 <p>{dish.description}</p>
                 <p>Price: ${dish.price}</p>
@@ -63,16 +66,14 @@ const Menu = ({ dishes }) => {
                   <button
                     className="btn btn-warning"
                     onClick={() =>
-                      navigate("/updatedish", { state: { id: dish.id } })
+                      navigate("/updateDish", { state: { id: dish.dish_id } })
                     }
                   >
                     Update
                   </button>
                   <button
                     className="btn btn-danger"
-                    onClick={() =>
-                      navigate("/deletedish", { state: { id: dish.id } })
-                    }
+                    onClick={() => handleDelete(dish.dish_id)} 
                   >
                     Delete
                   </button>

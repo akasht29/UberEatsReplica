@@ -13,6 +13,7 @@ import Orders from "./restaurant/Orders";
 import Home from "./Home";
 import Navbar from "./components/Navbar";
 import CreateDish from "./components/CreateDish";
+import UpdateDish from "./components/UpdateDish";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/customerprofile" element={<CustomerProfile />} />
           <Route path="/restaurantprofile" element={<RestaurantProfile />} />
           <Route path="/createdish" element={<CreateDish />} />
+          <Route path="/updatedish" element={<UpdateDish />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/favorites" element={<Favorites />} />

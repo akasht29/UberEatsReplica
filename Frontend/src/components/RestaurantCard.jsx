@@ -14,6 +14,7 @@ const RestaurantCard = ({
       <div className="row g-0">
         <div className="col-md-4">
           <img
+
             src={images ? `http://localhost:3000${images}` : "/restaurant.jpg"}
             alt="Profile"
             className="mb-3"
@@ -27,6 +28,7 @@ const RestaurantCard = ({
 
             <div className="d-flex justify-content-between mb-2">
               <p className="card-text">Location:{location}</p>
+
               <p className="card-text">Contact: {contact_info}</p>
               <p className="card-text">Hours: {timings}</p>
             </div>
