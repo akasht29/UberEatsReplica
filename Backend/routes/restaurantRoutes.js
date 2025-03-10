@@ -17,6 +17,7 @@ router.put("/profile/picture", restaurantAuth, upload.single("file"), restaurant
 
 router.post("/dish", restaurantAuth, restaurantController.addDish);
 router.get("/dish", restaurantAuth, restaurantController.getDishes);
+router.delete("/dish/:id", restaurantAuth, restaurantController.deleteDish);
 
 router.get("/orders", restaurantAuth, restaurantController.viewOrders);
 router.post("/order/status/:id", restaurantAuth, restaurantController.updateOrderStatus);
