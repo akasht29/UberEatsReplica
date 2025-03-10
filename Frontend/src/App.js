@@ -12,6 +12,7 @@ import Cart from "./customer/Cart";
 import RestaurantProfile from "./restaurant/Profile";
 import RestaurantSignUp from "./restaurant/SignUp";
 import RestaurantLogin from "./restaurant/Login";
+import ViewOrders from "./customer/ViewOrders";
 import Orders from "./restaurant/Orders";
 import Home from "./Home";
 import Navbar from "./components/Navbar";
@@ -49,6 +50,7 @@ const App = () => {
           <Route path="/orders" element={<Orders />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/vieworders" element={<ViewOrders />} />
         </Routes>
       </Router>
     </>

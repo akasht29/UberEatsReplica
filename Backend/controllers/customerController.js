@@ -294,10 +294,10 @@ exports.viewCart = async (req, res) => {
 // Checkout the cart
 exports.checkoutCart = async (req, res) => {
   try {
-    const customerId = req.session.customerId; // Assuming customer is authenticated via session
+    const customerId = req.session.customerId; 
     const restaurantId = req.body.restaurant_id;
 
-    // Fetch cart items for the specific customer and restaurant
+  
     const cartItems = await Cart.findAll({
       where: { customer_id: customerId, restaurant_id: restaurantId },
       include: [{ model: Dish }],
@@ -307,10 +307,10 @@ exports.checkoutCart = async (req, res) => {
       return res.status(400).json({ message: "Cart is empty!" });
     }
 
-    // Calculate total price of the cart
+    
     let totalPrice = 0;
     const orderItems = cartItems.map((item) => {
-      totalPrice += item.Dish.price * item.quantity; // Assuming price is on Dish model
+      totalPrice += item.Dish.price * item.quantity; 
       return {
         dish_id: item.dish_id,
         quantity: item.quantity,
@@ -327,6 +327,7 @@ exports.checkoutCart = async (req, res) => {
     });
 
     // Create order items in the OrderItems table
+
     await OrderItem.bulkCreate(
       orderItems.map((orderItem) => ({
         ...orderItem,
