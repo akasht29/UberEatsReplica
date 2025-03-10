@@ -1,30 +1,22 @@
-import React, { useState, useEffect } from "react";
-import axios from "../utils/axiosConfig";
+import React, { useEffect } from "react";
 
 const ViewOrderCard = ({
   orderKey,
-    OrderItems,
+  OrderItems,
   customer_id,
   order_status,
   delivery_status,
-  onStatusChange,
 }) => {
-  const [customerInfo, setCustomerInfo] = useState(null);
-  const [orderStatus, setOrderStatus] = useState(order_status);
-  const [deliveryStatus, setDeliveryStatus] = useState(delivery_status);
-
   useEffect(() => {
-    console.log("ok",orderKey);
-    console.log("oi",OrderItems)
+    console.log("ok", orderKey);
+    console.log("oi", OrderItems);
   }, [orderKey]);
-
 
   return (
     <div className="card mb-4 shadow-sm">
       <div className="card-body">
 
-
-        <div >
+        <div>
           <strong>Ordered:</strong>
         </div>
         <ul className="card-text">
@@ -42,11 +34,11 @@ const ViewOrderCard = ({
         </ul>
 
         <div className="mb-2">
-          <label className="fw-bold">Order Status: {orderStatus}</label>
+          <label className="fw-bold">Order Status: {order_status}</label>
         </div>
 
         <div className="mb-2">
-          <label className="fw-bold">Delivery Status:{deliveryStatus}</label>
+          <label className="fw-bold">Delivery Status: {delivery_status}</label>
         </div>
       </div>
     </div>
