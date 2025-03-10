@@ -7,7 +7,7 @@ const customerRoutes = require("./routes/customerRoutes");
 const restaurantRoutes = require("./routes/restaurantRoutes");
 
 const session = require("express-session");
-const restaurant = require('./models/restaurant');
+const restaurant = require("./models/restaurant");
 const app = express();
 
 app.use(
@@ -30,14 +30,6 @@ app.use(
   })
 );
 
-app.get("/customer/check-auth", (req, res) => {
-  if (req.session.customer_id) {
-    res.status(200).json({ authenticated: true });
-  } else {
-    res.status(401).json({ authenticated: false });
-  }
-});
-
 app.use((req, res, next) => {
   console.log("Session Debug:", req.session); // Log session details
   next();
@@ -46,22 +38,19 @@ app.use("/uploads", express.static("uploads"));
 app.use("/customer", customerRoutes);
 app.use("/restaurant", restaurantRoutes);
 
-
-
-
-app.get('/api/customer', (req, res) => {
+app.get("/api/customer", (req, res) => {
   if (req.session.customerId) {
     res.json({ customerId: req.session.customerId });
   } else {
-    res.status(401).json({ error: 'Unauthorized' });
+    res.status(401).json({ error: "Unauthorized" });
   }
 });
 
-app.get('/api/restaurant', (req, res) => {
+app.get("/api/restaurant", (req, res) => {
   if (req.session.restaurantId) {
     res.json({ restaurantId: req.session.restaurantId });
   } else {
-    res.status(401).json({ error: 'Unauthorized' });
+    res.status(401).json({ error: "Unauthorized" });
   }
 });
 

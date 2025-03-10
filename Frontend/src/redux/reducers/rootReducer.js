@@ -1,3 +1,4 @@
+// reducers/rootReducer.js
 import { combineReducers } from "redux";
 import {
   dishReducer,
@@ -6,6 +7,7 @@ import {
   dishUpdateReducer,
   dishDeleteReducer,
 } from "./cartReducer";
+import { userReducer } from "./userReducer";
 
 const rootReducer = combineReducers({
   dishCreate: dishReducer,
@@ -13,9 +15,7 @@ const rootReducer = combineReducers({
   dishDetails: dishDetailsReducer,
   dishUpdate: dishUpdateReducer,
   dishDelete: dishDeleteReducer,
+  user: userReducer,
 });
-
-// Debug: Log the rootReducer state
-console.log("Root Reducer State:", rootReducer);
 
 export default rootReducer;
