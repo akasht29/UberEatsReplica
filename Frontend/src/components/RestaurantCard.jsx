@@ -35,8 +35,8 @@ const RestaurantCard = ({
       const response = await axios.post(
         "http://localhost:3000/customer/cart/add",
         {
-          dish_id,
-          qty,
+          dish_id: dish_id,
+          quantity: qty,
         }
       );
       alert("Dish added to cart successfully!");
