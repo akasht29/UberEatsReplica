@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
       customer_id: { type: DataTypes.INTEGER, allowNull: false },
       total_price: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0.0 },
       restaurant_id: { type: DataTypes.INTEGER, allowNull: false },
-      status: { type: DataTypes.STRING, allowNull: false, defaultValue: 'Pending' }
+      order_status: { type: DataTypes.STRING, allowNull: false, defaultValue: 'New' },
+      delivery_status: { type: DataTypes.STRING, allowNull: false, defaultValue: 'Order_Received' }
     });
   
     Order.associate = (models) => {

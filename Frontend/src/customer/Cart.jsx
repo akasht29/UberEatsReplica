@@ -1,59 +1,109 @@
-import React from "react";
-
-const cartData = [
-  {
-    cartId: 1,
-    customer: {
-      id: 101,
-      name: "John Doe",
-      image: "",
-    },
-    items: [
-      { dishId: 301, name: "Burger", quantity: 2, price: 5.99 },
-      { dishId: 302, name: "Pizza", quantity: 1, price: 9.99 },
-    ],
-  },
-];
+// components/Cart.js
+import React, { useEffect, useState } from "react";
+import axios from "../utils/axiosConfig";
+import CartCard from "../components/CartCard";
 
 const Cart = () => {
-  const cartId = 1;
-  const cart = cartData.find((c) => c.cartId === parseInt(cartId));
+  const [cart, setCart] = useState([]);
+  const [customerId, setCustomerId] = useState(null);
+  const [checkoutStatus, setCheckoutStatus] = useState(false);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/customer/cart");
+
+        const customerResponse = await axios.get(
+          "http://localhost:3000/api/customer"
+        );
+        console.log("customerResponse", customerResponse.data.customerId);
+
+        setCustomerId(customerResponse.data.customerId);
+
+        const cartData = Object.keys(response.data.data).map((key) => {
+          return {
+            customerId: customerResponse.data.id,
+            restaurantId: key,
+            ...response.data.data[key],
+          };
+        });
+
+        setCart(cartData);
+        console.log("cartData", cartData);
+
+        cartData.forEach((restaurant) => {
+          console.log(
+            `Dishes from ${restaurant.restaurantName}:`,
+            restaurant.dishes
+          );
+        });
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
+    };
+
+    fetchCart();
+  }, [checkoutStatus]);
+
+  const handleCheckout = async (restaurantId) => {
+    try {
+      if (!customerId) {
+        alert("Customer not found");
+        return;
+      }
+
+      console.log("customerId", customerId);
+      console.log("restaurantId", restaurantId);
+
+      const response = await axios.post(
+        "http://localhost:3000/customer/cart/checkout",
+        {
+          restaurant_id: restaurantId,
+        }
+      );
+
+      alert("Checked out successfully!");
+
+      setCheckoutStatus((prevStatus) => !prevStatus);
+    } catch (error) {
+      console.error("Error checking out:", error);
+      alert("Failed to checkout.");
+    }
+  };
+
+  const updateCart = async (dishId, quantity) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:3000/customer/cart/update",
+        {
+          dish_id: dishId,
+          quantity: quantity,
+        }
+      );
+      console.log("Cart updated:", response.data);
+      setCheckoutStatus((prevStatus) => !prevStatus);
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      alert("Failed to update cart.");
+    }
+  };
 
   return (
     <div className="container mt-4">
       <div className="card">
         <div className="card-body">
-          <div className="d-flex align-items-center">
-            <img
-              src={cart.customer.image}
-              alt={cart.customer.name}
-              className="rounded-circle me-3"
-              width="80"
-            />
-            <h2>{cart.customer.name}'s Cart</h2>
-          </div>
-
-          <h4 className="mt-3">Items:</h4>
-          <ul className="list-group">
-            {cart.items.map((item) => (
-              <li
-                key={item.dishId}
-                className="list-group-item d-flex justify-content-between"
-              >
-                <span>
-                  {item.name} (x{item.quantity})
-                </span>
-                <span>${(item.quantity * item.price).toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
-
-          <h4 className="mt-3">
-            Total: $
-            {cart.items
-              .reduce((acc, item) => acc + item.quantity * item.price, 0)
-              .toFixed(2)}
-          </h4>
+          {cart.length > 0 ? (
+            cart.map((restaurant) => (
+              <CartCard
+                key={restaurant.restaurantId}
+                restaurant={restaurant}
+                handleCheckout={handleCheckout}
+                updateCart={updateCart}
+              />
+            ))
+          ) : (
+            <p>Your cart is empty.</p>
+          )}
         </div>
       </div>
     </div>

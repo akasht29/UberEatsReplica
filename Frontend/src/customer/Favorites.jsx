@@ -1,37 +1,54 @@
-import React from "react";
-import RestaurantCard from "../components/ResturantCard";
+import React, { useState, useEffect } from "react";
+import RestaurantCard from "../components/RestaurantCard";
+import axios from "../utils/axiosConfig";
+
 const Favorites = () => {
-  const favoriteResturants = [
-    {
-      id: 1,
-      name: "Tasty Bistro",
-      location: "123 Flavor Street, Foodie City",
-      description: "A cozy restaurant offering a variety of delicious dishes.",
-      contactInfo: "+1234567890",
-      images: "/images/restaurant1.jpg",
-      hours: "Mon-Fri: 9 AM - 9 PM Sat-Sun: 10 AM - 11 PM",
-    },
-    {
-      id: 2,
-      name: "Spicy Delights",
-      location: "456 Spice Road, Flavor Town",
-      description: "Spicy food for those who love heat in their meals.",
-      contactInfo: "+9876543210",
-      images: "/images/restaurant4.jpg",
-      hours: "Mon-Sun: 11 AM - 10 PM",
-    },
-  ];
+  const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
+
+  const fetchFavorites = async () => {
+    try {
+      const restaurantResponse = await axios.get(
+        "http://localhost:3000/customer/restaurants",
+        {
+          withCredentials: true,
+        }
+      );
+      const favoritesResponse = await axios.get("/customer/favorites", {
+        withCredentials: true,
+      });
+
+      const filteredFavorites = restaurantResponse.data.filter((restaurant) =>
+        favoritesResponse.data.some(
+          (fav) => fav.restaurant_id === restaurant.restaurant_id
+        )
+      );
+      setFavoriteRestaurants(filteredFavorites);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
 
   return (
     <div className="container mt-4">
       <h1 className="text-center mb-4">Favorite Restaurants</h1>
 
       <div className="row">
-        {favoriteResturants.map((restaurant) => (
-          <div className="col-md-4" key={restaurant.id}>
-            <RestaurantCard {...restaurant} />
-          </div>
-        ))}
+        {favoriteRestaurants.length > 0 ? (
+          favoriteRestaurants.map((restaurant) => (
+            <div className="col-md-4" key={restaurant.id}>
+              <RestaurantCard
+                {...restaurant}
+                refetchFavorites={fetchFavorites}
+              />
+            </div>
+          ))
+        ) : (
+          <p>No favorites yet.</p>
+        )}
       </div>
     </div>
   );

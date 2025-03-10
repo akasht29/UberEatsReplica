@@ -2,11 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+import { setUserType } from "../redux/actions/userActions";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const handleSetUserType = (type) => {
+    dispatch(setUserType(type));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +32,8 @@ const Login = () => {
       );
       console.log(response);
       if (response.status === 200) {
-        navigate("/resturantprofile");
+        handleSetUserType("restaurant");
+        navigate("/restaurantprofile");
       }
     } catch (err) {
       setError("Invalid credentials");
@@ -32,13 +41,10 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <div className="card" style={{ width: "100%", maxWidth: "400px" }}>
-        <div className="card-body">
-          <h2 className="text-center mb-4">Login</h2>
+    <div className="container d-flex justify-content-center align-items-center">
+      <div style={{ width: "100%", maxWidth: "400px" }}>
+        <div>
+          <h1 className="text-center mb-4">Restaurant Login</h1>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -73,13 +79,13 @@ const Login = () => {
 
             {error && <div className="alert alert-danger">{error}</div>}
 
-            <button type="submit" className="btn btn-primary w-100">
+            <button type="submit" className="btn btn-dark w-100">
               Log In
             </button>
           </form>
 
           <p className="mt-3 text-center">
-            Don't have an account? <a href="/signup">Sign up</a>
+            Don't have an account? <a href="/restaurantsignup">Sign up</a>
           </p>
         </div>
       </div>

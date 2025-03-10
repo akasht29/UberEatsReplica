@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import RestaurantCard from "../components/ResturantCard";
+import RestaurantCard from "../components/RestaurantCard";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosConfig";
 
@@ -12,15 +12,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        console.log("Making request to fetch restaurants...");
         const response = await axios.get(
           "http://localhost:3000/customer/restaurants",
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
-
-        console.log("Response:", response.data);
         if (response.status === 200) {
           setRestaurants(response.data);
         }
