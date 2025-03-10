@@ -31,10 +31,15 @@ module.exports = {
         allowNull: false,
         defaultValue: 0.0,
       },
-      status: {
+      order_status: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'Pending', // Default status when order is created
+        defaultValue: 'New', // Default status when order is created
+      },
+      delivery_status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'Order_Received', // Default status when order is created
       },
       createdAt: {
         allowNull: false,
