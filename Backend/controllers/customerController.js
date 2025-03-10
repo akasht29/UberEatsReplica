@@ -1,5 +1,13 @@
 const bcrypt = require("bcryptjs");
-const { Customer, Restaurant, Favorite, Cart, Dish, Order, OrderItem } = require("../models");
+const {
+  Customer,
+  Restaurant,
+  Favorite,
+  Cart,
+  Dish,
+  Order,
+  OrderItem,
+} = require("../models");
 const multer = require("multer");
 const path = require("path");
 const session = require("express-session");
@@ -53,8 +61,8 @@ exports.logout = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Logout failed" });
     }
-    console.log('Session destroyed');
-    res.clearCookie('connect.sid'); //for testing
+    console.log("Session destroyed");
+    res.clearCookie("connect.sid"); //for testing
     res.status(200).json({ message: "Logout successful" });
   });
 };
@@ -134,86 +142,77 @@ exports.addToCart = async (req, res) => {
       return res.status(404).json({ message: "Dish not found." });
     }
 
-
     let cartItem = await Cart.findOne({
       where: {
         customer_id: req.session.customerId,
-        dish_id: dish_id
-      }
-
+        dish_id: dish_id,
+      },
     });
-
 
     if (cartItem) {
       cartItem.quantity += quantity;
       await cartItem.save();
     } else {
- 
       cartItem = await Cart.create({
         restaurant_id: dish.restaurant_id,
         customer_id: req.session.customerId,
         dish_id: dish_id,
         quantity,
-        price: dish.price 
+        price: dish.price,
       });
     }
     res.status(200).json({
       success: true,
-      message: 'Dish added to cart successfully',
-      cartItem
+      message: "Dish added to cart successfully",
+      cartItem,
     });
   } catch (error) {
-    console.error('Error adding item to cart:', error);
+    console.error("Error adding item to cart:", error);
     res.status(500).json({
       success: false,
-      message: 'Error adding item to cart'
+      message: "Error adding item to cart",
     });
   }
 };
 
-
-
 // View all items in the customer's cart
 exports.viewCart = async (req, res) => {
   try {
-    const customerId = req.session.customerId;  
+    const customerId = req.session.customerId;
 
-  
     const cartItems = await Cart.findAll({
       where: { customer_id: customerId },
       include: [
         {
           model: Dish,
-          attributes: ['dish_id', 'name', 'price'],  
+          attributes: ["dish_id", "name", "price"],
         },
         {
           model: Restaurant,
-          attributes: ['restaurant_id', 'restaurant_name'],  
+          attributes: ["restaurant_id", "restaurant_name"],
         },
       ],
     });
 
-
     const groupedByRestaurant = cartItems.reduce((acc, cartItem) => {
-      const { restaurant_id, restaurant_name: restaurantName } = cartItem.Restaurant;
+      const { restaurant_id, restaurant_name: restaurantName } =
+        cartItem.Restaurant;
       const { name: dishName, price } = cartItem.Dish;
       const quantity = cartItem.quantity;
 
-   
       if (!acc[restaurant_id]) {
         acc[restaurant_id] = {
           restaurantName,
           dishes: [],
-          totalPrice: 0,  
+          totalPrice: 0,
         };
       }
 
-      
       acc[restaurant_id].dishes.push({
         dishName,
         price,
         quantity,
-        totalPrice: price * quantity,  
+        totalPrice: price * quantity,
       });
 
       acc[restaurant_id].totalPrice += price * quantity;
@@ -221,20 +220,18 @@ exports.viewCart = async (req, res) => {
       return acc;
     }, {});
 
-   
     return res.status(200).json({
       success: true,
       data: groupedByRestaurant,
     });
-
   } catch (error) {
-    console.error('Error fetching cart items grouped by restaurant:', error);
+    console.error("Error fetching cart items grouped by restaurant:", error);
     return res.status(500).json({
       success: false,
-      message: 'Error fetching cart items grouped by restaurant',
+      message: "Error fetching cart items grouped by restaurant",
     });
   }
-}
+};
 
 // Checkout the cart
 exports.checkoutCart = async (req, res) => {
@@ -245,7 +242,7 @@ exports.checkoutCart = async (req, res) => {
     // Fetch cart items for the specific customer and restaurant
     const cartItems = await Cart.findAll({
       where: { customer_id: customerId, restaurant_id: restaurantId },
-      include: [{ model: Dish }]
+      include: [{ model: Dish }],
     });
 
     if (cartItems.length === 0) {
@@ -254,12 +251,12 @@ exports.checkoutCart = async (req, res) => {
 
     // Calculate total price of the cart
     let totalPrice = 0;
-    const orderItems = cartItems.map(item => {
+    const orderItems = cartItems.map((item) => {
       totalPrice += item.Dish.price * item.quantity; // Assuming price is on Dish model
       return {
         dish_id: item.dish_id,
         quantity: item.quantity,
-        price: item.Dish.price * item.quantity
+        price: item.Dish.price * item.quantity,
       };
     });
 
@@ -268,36 +265,44 @@ exports.checkoutCart = async (req, res) => {
       customer_id: customerId,
       restaurant_id: restaurantId,
       total_price: totalPrice,
-      status: 'Pending'
+      status: "Pending",
     });
 
     // Create order items in the OrderItems table
-    await OrderItem.bulkCreate(orderItems.map(orderItem => ({
-      ...orderItem,
-      order_id: order.id
-    })));
+    await OrderItem.bulkCreate(
+      orderItems.map((orderItem) => ({
+        ...orderItem,
+        order_id: order.id,
+      }))
+    );
 
     // Clear the cart for the customer after checkout
-    await Cart.destroy({ where: { customer_id: customerId, restaurant_id: restaurantId } });
+    await Cart.destroy({
+      where: { customer_id: customerId, restaurant_id: restaurantId },
+    });
 
     return res.status(200).json({
       message: "Order placed successfully!",
       orderId: order.id,
-      totalPrice
+      totalPrice,
     });
   } catch (error) {
     console.error("Error during checkout:", error);
-    return res.status(500).json({ message: "An error occurred during checkout.", error: error.message });
+    return res
+      .status(500)
+      .json({
+        message: "An error occurred during checkout.",
+        error: error.message,
+      });
   }
 };
 
-exports.viewOrders = async(req, res) => {
-  const customerId = req.session.customerId
-  
+exports.viewOrders = async (req, res) => {
+  const customerId = req.session.customerId;
 
   const order = await Order.findAll({
     where: { customer_id: customerId },
-    include: [{ model: OrderItem, include: [Dish] }]
+    include: [{ model: OrderItem, include: [Dish] }],
   });
 
   if (!order) {
@@ -305,16 +310,16 @@ exports.viewOrders = async(req, res) => {
   }
 
   return res.status(200).json({ order });
-}
-
-
-
+};
 
 // Add to Favourites
 exports.addToFavorites = async (req, res) => {
   try {
     const { restaurant_id } = req.body;
-    await Favorite.create({ customer_id: req.session.customerId, restaurant_id });
+    await Favorite.create({
+      customer_id: req.session.customerId,
+      restaurant_id,
+    });
 
     res.json({ message: "Added to favorites" });
   } catch (error) {
@@ -325,7 +330,9 @@ exports.addToFavorites = async (req, res) => {
 // Get Favourites
 exports.getFavorites = async (req, res) => {
   try {
-    const favourites = await Favorite.findAll({ where: { customer_id: req.session.customerId } });
+    const favourites = await Favorite.findAll({
+      where: { customer_id: req.session.customerId },
+    });
 
     res.json(favourites);
   } catch (error) {
