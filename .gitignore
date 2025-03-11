@@ -2,3 +2,4 @@ package-lock.json
 .env
 Backend/node_modules
 Backend/uploads
+Frontend/node_modules
