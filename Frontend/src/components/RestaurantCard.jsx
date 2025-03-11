@@ -8,6 +8,8 @@ const RestaurantCard = ({
   description,
   contact_info,
   images,
+  timings,
+
   refetchFavorites,
 }) => {
   const [dishes, setDishes] = useState([]);
@@ -99,6 +101,7 @@ const RestaurantCard = ({
               <p className="card-text">Location: {location}</p>
               <p className="card-text">Contact: {contact_info}</p>
             </div>
+            <p className="card-text">Timings: {timings}</p>
             <button
               className={`btn ${
                 isFavorite ? "btn-danger" : "btn-primary"
@@ -114,6 +117,8 @@ const RestaurantCard = ({
                 dishes.map((dish) => (
                   <li key={dish.dish_id}>
                     <strong>{dish.name}</strong> - ${dish.price}
+                    <br />
+                    Ingredients: {dish.ingredients}
                     <div className="d-flex align-items-center mt-2">
                       <input
                         type="number"
