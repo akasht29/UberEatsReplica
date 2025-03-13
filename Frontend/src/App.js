@@ -35,23 +35,25 @@ const App = () => {
     <>
       <Router>
         <Navbar></Navbar>
-        <Routes>
-          {/* <Route path="/" element={<Home dishs={dishs} />} /> */}
-          <Route path="/" element={<Home />} />
-          <Route path="/customerlogin" element={<CustomerLogin />} />
-          <Route path="/restaurantlogin" element={<RestaurantLogin />} />
-          <Route path="/customersignup" element={<CustomerSignUp />} />
-          <Route path="/restaurantsignup" element={<RestaurantSignUp />} />
-          <Route path="/customerprofile" element={<CustomerProfile />} />
-          <Route path="/restaurantprofile" element={<RestaurantProfile />} />
-          <Route path="/createdish" element={<CreateDish />} />
-          <Route path="/updatedish" element={<UpdateDish />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/vieworders" element={<ViewOrders />} />
-        </Routes>
+        <div className="container mt-5 pt-5">
+          <Routes>
+            {/* <Route path="/" element={<Home dishs={dishs} />} /> */}
+            <Route path="/" element={<Home />} />
+            <Route path="/customerlogin" element={<CustomerLogin />} />
+            <Route path="/restaurantlogin" element={<RestaurantLogin />} />
+            <Route path="/customersignup" element={<CustomerSignUp />} />
+            <Route path="/restaurantsignup" element={<RestaurantSignUp />} />
+            <Route path="/customerprofile" element={<CustomerProfile />} />
+            <Route path="/restaurantprofile" element={<RestaurantProfile />} />
+            <Route path="/createdish" element={<CreateDish />} />
+            <Route path="/updatedish" element={<UpdateDish />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/vieworders" element={<ViewOrders />} />
+          </Routes>
+        </div>
       </Router>
     </>
   );

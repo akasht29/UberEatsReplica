@@ -145,7 +145,7 @@ const Navbar = () => {
                   >
                     <h5 className="py-2">Dashboard</h5>
                   </Link>
-                  
+
                   <Link
                     className="text-decoration-none text-black"
                     to="/favorites"
@@ -155,7 +155,10 @@ const Navbar = () => {
                   <Link className="text-decoration-none text-black" to="/cart">
                     <h5 className="py-2">Cart</h5>
                   </Link>
-                  <Link className="text-decoration-none text-black" to="/vieworders">
+                  <Link
+                    className="text-decoration-none text-black"
+                    to="/vieworders"
+                  >
                     <h5 className="py-2">View Orders</h5>
                   </Link>
                 </>

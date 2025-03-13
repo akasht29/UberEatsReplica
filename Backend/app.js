@@ -24,8 +24,8 @@ app.use(
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      secure: false, // Set to `true` in production (with HTTPS)
-      sameSite: "lax", // Use "none" if frontend & backend are on different origins
+      secure: false,
+      sameSite: "lax",
     },
   })
 );

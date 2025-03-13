@@ -4,13 +4,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const Home = () => {
   return (
     <div>
+      {/* Background Image */}
       <div
         style={{
           position: "fixed",
           top: 0,
           left: 0,
-          right: 0,
-          bottom: 0,
+          width: "100%",
+          height: "100vh",
           backgroundImage: "url(/homebg.jpeg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -19,18 +20,16 @@ const Home = () => {
         }}
       ></div>
 
+      {/* Content */}
       <div
-        className="d-flex justify-content-center flex-column"
+        className="container d-flex flex-column justify-content-center align-items-start text-white"
         style={{
-          position: "absolute",
-          top: 0,
-          left: 100,
-          right: 1000,
-          bottom: 0,
-          height: "100vh",
+          minHeight: "100vh",
+          paddingTop: "80px", // Adjust for navbar height
+          paddingLeft: "5vw", // Responsive padding
         }}
       >
-        <h1 className="text-left text-white mb-4 ">Order delivery near you</h1>
+        <h1 className="mb-4">Order delivery near you</h1>
 
         <div className="d-flex gap-3">
           <input

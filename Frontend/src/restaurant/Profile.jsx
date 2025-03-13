@@ -152,6 +152,7 @@ const Profile = () => {
               onChange={handleChange}
               className="form-control mb-3"
               placeholder="Restaurant Name"
+              required
             />
             <input
               type="text"
@@ -168,6 +169,7 @@ const Profile = () => {
               onChange={handleChange}
               className="form-control mb-3"
               placeholder="Location"
+              required
             />
             <input
               type="text"

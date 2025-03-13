@@ -44,10 +44,10 @@ const Dashboard = () => {
       ) : error ? (
         <p>{error}</p>
       ) : (
-        <div className="row">
+        <div className="row ">
           {restaurants.length > 0 ? (
             restaurants.map((restaurant) => (
-              <div className="col-md-4" key={restaurant.id}>
+              <div className="col-md-4 " key={restaurant.id}>
                 <RestaurantCard {...restaurant} />
               </div>
             ))

@@ -189,6 +189,7 @@ const Profile = () => {
                 onChange={handleChange}
                 className="form-control"
                 placeholder="Full Name"
+                required
               />
             </div>
             <div className="mb-3">
