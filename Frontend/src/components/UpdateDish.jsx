@@ -160,6 +160,7 @@ const EditDish = () => {
             className="form-control"
             id="image"
             onChange={handleFileChange}
+            required
           />
         </div>
 

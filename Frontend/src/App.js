@@ -35,7 +35,7 @@ const App = () => {
     <>
       <Router>
         <Navbar></Navbar>
-        <div className="container mt-5 pt-5">
+        <div className="container ">
           <Routes>
             {/* <Route path="/" element={<Home dishs={dishs} />} /> */}
             <Route path="/" element={<Home />} />

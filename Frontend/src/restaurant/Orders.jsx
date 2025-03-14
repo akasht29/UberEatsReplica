@@ -51,6 +51,7 @@ const Orders = () => {
       const filtered = orders.filter((order) => order.order_status === status);
       setFilteredOrders(filtered);
     }
+    setSelectedStatus(status); // Update the selected status
   };
 
   const updateOrderStatusInParent = (orderKey, newStatus, type) => {
@@ -67,7 +68,6 @@ const Orders = () => {
     <div className="container mt-4">
       <h1 className="text-center mb-4">Orders</h1>
 
-      {/* Buttons for filtering */}
       <div className="text-center mb-4">
         <button
           className="btn btn-primary me-2"
@@ -82,13 +82,13 @@ const Orders = () => {
           Delivered
         </button>
         <button
-          className="btn btn-danger"
+          className="btn btn-danger me-2"
           onClick={() => filterOrdersByStatus("Cancelled")}
         >
           Cancelled
         </button>
         <button
-          className="btn btn-secondary ms-2"
+          className="btn btn-secondary"
           onClick={() => filterOrdersByStatus("All")}
         >
           All Orders
@@ -103,7 +103,8 @@ const Orders = () => {
         <div className="row">
           {filteredOrders.length > 0 ? (
             filteredOrders.map((order) => (
-              <div className="col-md-4" key={order.id}>
+              <div className="col-12 col-md-4 col-sm-6 mb-4" key={order.id}>
+                {" "}
                 <OrderCard
                   {...order}
                   orderKey={order.id}

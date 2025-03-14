@@ -11,12 +11,12 @@ const CreateDish = () => {
   const [imageFile, setImageFile] = useState(null); // New state for image
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); 
-    setSuccessMessage(""); 
+    setError("");
+    setSuccessMessage("");
 
     const formData = new FormData();
     formData.append("name", name);
@@ -32,7 +32,7 @@ const CreateDish = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/restaurant/dish", 
+        "http://localhost:3000/restaurant/dish",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -56,7 +56,10 @@ const CreateDish = () => {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+    <div
+      className="container d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh" }}
+    >
       <div className="card" style={{ width: "100%", maxWidth: "400px" }}>
         <div className="card-body">
           <h2 className="text-center mb-4">Create a New Dish</h2>
@@ -64,7 +67,9 @@ const CreateDish = () => {
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             {/* Name */}
             <div className="mb-3">
-              <label htmlFor="name" className="form-label">Dish Name</label>
+              <label htmlFor="name" className="form-label">
+                Dish Name
+              </label>
               <input
                 type="text"
                 className="form-control"
@@ -78,7 +83,9 @@ const CreateDish = () => {
 
             {/* Ingredients */}
             <div className="mb-3">
-              <label htmlFor="ingredients" className="form-label">Ingredients</label>
+              <label htmlFor="ingredients" className="form-label">
+                Ingredients
+              </label>
               <textarea
                 className="form-control"
                 id="ingredients"
@@ -91,7 +98,9 @@ const CreateDish = () => {
 
             {/* Price */}
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Price</label>
+              <label htmlFor="price" className="form-label">
+                Price
+              </label>
               <input
                 type="number"
                 className="form-control"
@@ -105,7 +114,9 @@ const CreateDish = () => {
 
             {/* Description */}
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Description</label>
+              <label htmlFor="description" className="form-label">
+                Description
+              </label>
               <textarea
                 className="form-control"
                 id="description"
@@ -118,7 +129,9 @@ const CreateDish = () => {
 
             {/* Category */}
             <div className="mb-3">
-              <label htmlFor="category" className="form-label">Category</label>
+              <label htmlFor="category" className="form-label">
+                Category
+              </label>
               <select
                 id="category"
                 className="form-select"
@@ -136,18 +149,23 @@ const CreateDish = () => {
 
             {/* Image Upload */}
             <div className="mb-3">
-              <label htmlFor="image" className="form-label">Upload Image</label>
+              <label htmlFor="image" className="form-label">
+                Upload Image
+              </label>
               <input
                 type="file"
                 className="form-control"
                 id="image"
                 accept="image/*"
                 onChange={(e) => setImageFile(e.target.files[0])}
+                required
               />
             </div>
 
             {error && <div className="alert alert-danger">{error}</div>}
-            {successMessage && <div className="alert alert-success">{successMessage}</div>}
+            {successMessage && (
+              <div className="alert alert-success">{successMessage}</div>
+            )}
 
             <button type="submit" className="btn btn-primary w-100">
               Create Dish

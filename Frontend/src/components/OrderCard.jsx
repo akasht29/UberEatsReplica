@@ -50,12 +50,29 @@ const OrderCard = ({
 
   return (
     <div className="card mb-4 shadow-sm">
-      <div className="card-body">
-        <h5 className="card-title">
-          Name: {customerInfo?.customer?.name || "Unknown"}
-        </h5>
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
+      <div className="card-body d-flex flex-column">
+        <div className="d-flex justify-content-center mb-3">
+          <img
+            src={
+              customerInfo?.customer?.profile_picture
+                ? `http://localhost:3000${customerInfo.customer.profile_picture}`
+                : "/profile.jpg"
+            }
+            alt="Profile"
+            className="rounded-circle"
+            style={{
+              width: "100px",
+              height: "100px",
+              objectFit: "cover",
+            }}
+          />
+        </div>
+
+        <div>
+          <h5 className="card-title text-center">
+            Name: {customerInfo?.customer?.name || "Unknown"}
+          </h5>
+          <div className="text-center">
             <p className="card-text">
               Email: {customerInfo?.customer?.email || "Unknown"}
               <br />
@@ -64,18 +81,9 @@ const OrderCard = ({
               State: {customerInfo?.customer?.state || "Unknown"}
             </p>
           </div>
-          <img
-            src={
-              customerInfo?.customer?.profile_picture
-                ? `http://localhost:3000${customerInfo.customer.profile_picture}`
-                : "/profile.jpg"
-            }
-            alt="Profile"
-            className="rounded-circle ms-auto"
-            style={{ width: "100px", height: "100px", objectFit: "cover" }}
-          />
         </div>
-        <div className=" mt-5">
+
+        <div className="mt-4">
           <strong>Dishes Ordered:</strong>
         </div>
         <ul className="card-text">

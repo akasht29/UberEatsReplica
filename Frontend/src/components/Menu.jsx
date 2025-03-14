@@ -47,36 +47,36 @@ const Menu = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-5">
       <h1 className="text-center mb-4">Dish Management App</h1>
-      <h2 className="text-center">Dish List</h2>
+      <h2 className="text-center mb-5">Dish List</h2>
 
-      <div className="row">
+      <div className="row g-4">
         {dishes.map((dish) => (
           <div className="col-md-4" key={dish.dish_id}>
-            <div className="card mb-4 shadow-sm">
+            <div className="card shadow-lg border-0 rounded-3">
+              <img
+                src={
+                  dish.image
+                    ? `http://localhost:3000${dish.image}`
+                    : "fallback-image.jpg"
+                }
+                alt="Dish"
+                className="card-img-top"
+                style={{
+                  height: "200px",
+                  objectFit: "cover",
+                }}
+              />
               <div className="card-body">
-                <img
-                  src={
-                    dish.image
-                      ? `http://localhost:3000${dish.image}`
-                      : "fallback-image.jpg"
-                  }
-                  alt="dishimage"
-                  className="mb-3"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    objectFit: "cover",
-                  }}
-                />
-
-                <h5 className="card-title">{dish.name}</h5>
+                <h5 className="card-title text-center">{dish.name}</h5>
                 <p className="card-text">
                   <strong>ID:</strong> {dish.dish_id}
                 </p>
-                <p>{dish.description}</p>
-                <p>Price: ${dish.price}</p>
+                <p className="card-text">{dish.description}</p>
+                <p className="card-text">
+                  <strong>Price:</strong> ${dish.price}
+                </p>
 
                 <div className="d-grid gap-2">
                   <button
@@ -100,7 +100,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="text-center mt-4">
+      <div className="text-center mt-5">
         <button
           className="btn btn-success btn-lg"
           onClick={() => navigate("/createdish")}

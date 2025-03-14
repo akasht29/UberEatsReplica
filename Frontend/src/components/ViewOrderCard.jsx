@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Badge } from "react-bootstrap"; // Assuming you're using Bootstrap
+import { Badge } from "react-bootstrap";
 
 const ViewOrderCard = ({
   orderKey,
@@ -12,7 +12,6 @@ const ViewOrderCard = ({
     console.log("oi", OrderItems);
   }, [orderKey]);
 
-  // Color-coded status badges for better visibility
   const getStatusBadge = (status) => {
     switch (status.toLowerCase()) {
       case "new":
@@ -53,7 +52,9 @@ const ViewOrderCard = ({
         </div>
 
         <div className="mb-2">
-          <h6 className="fw-bold">Order Status: {getStatusBadge(order_status)}</h6>
+          <h6 className="fw-bold">
+            Order Status: {getStatusBadge(order_status)}
+          </h6>
         </div>
 
         <div className="mb-2">
